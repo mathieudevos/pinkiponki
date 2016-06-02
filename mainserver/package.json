@@ -20,7 +20,9 @@
     "mongoose-schema-extend": "*",
     "winston": "*",
     "utf8": ">=0.0.1",
-    "json-mask": "0.3.5"
+    "json-mask": "0.3.5",
+    "node-uuid": "*",
+    "bcrypt": "*"
   },
   "database": "pinkiponki",
   "log_path": "/logs/",
