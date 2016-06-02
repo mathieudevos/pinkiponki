@@ -1,0 +1,17 @@
+{
+  "app_name": "pinkiponki",
+  "version": "0.1.1",
+  "description": "back-end for pinkiponki",
+
+  "timeout": "5s",
+  "database": "pinkiponki",
+  "log_path": "/logs/",
+
+  "server": {
+    "host": "localhost",
+    "port": "9721",
+    "sslport": "9722"
+  },
+
+  "api": "1"
+}
