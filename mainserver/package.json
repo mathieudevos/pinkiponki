@@ -22,7 +22,11 @@
     "utf8": ">=0.0.1",
     "json-mask": "0.3.5",
     "node-uuid": "*",
-    "bcrypt": "*"
+    "connect-timeout": "*",
+
+    "bcrypt": "*",
+    "crypto": "*",
+    "csprng": "*"
   },
   "database": "pinkiponki",
   "log_path": "/logs/",
