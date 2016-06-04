@@ -6,8 +6,8 @@ var config = require(ROOT + '/config.json');
 var crypto = require('crypto');
 var random = require('csprng');
 
-var userHandler = require(ROOT + '/models/userModel.js');
-var USERS = new userHandler(); 
+var users = require(ROOT + '/models/userModel.js');
+var userController = new(require(ROOT + '/controllers/userController'))
 
 var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('user');
@@ -28,21 +28,22 @@ module.exports = function() {
 				var temp = random(160,36); //salt
 				var newpass = temp + password;
 				var hashed_pw = crypto.createHash('sha512').update(newpass).digest('hex');
-				USERS.findUser(username, function(err, users){
+				userController.getUser(username, function(err, user){
 					if (err) {
 						httpResponses.sendError(err, "Error finding user");
 						return;
 					}
-					if(users.length==0){
+					if(!user){
 						//Nobody in the db, register this one!
-						var newuser = new userHandler({
+						var newuser = new users({
 							username: username,
 							email: email,
 							firstname: req.body.firstname,
 							lastname: req.body.lastname,
 							salt: temp,
 							password: hashed_pw,
-							about: req.body.about
+							about: req.body.about,
+							rating: 1200
 						});
 						newuser.save(function (err){
 							if (err) {httpResponses.sendError(err, "Error saving user.");}

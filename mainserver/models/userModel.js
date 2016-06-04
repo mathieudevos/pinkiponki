@@ -12,7 +12,8 @@ var userSchema = mongoose.Schema({
 	about: 			{ type: String},
 	email: 			{ type: String},
 	//clubs: 			{ type: [{type: ObjectId, ref: "clubModel"}]},
-	salt:  			{ type: String}
+	salt:  			{ type: String},
+	rating:  		{ type: Number}
 });
 
 //JSON never send pw or salt (dööh)
@@ -31,22 +32,4 @@ userSchema.methods.toJson = function(){
 	return response;
 };
 
-var userModel = mongoose.model('userModel', userSchema);
-
-module.exports = function userHandler() {
-	// Everything that gets exported
-
-	this.findUser = function(username, callback){
-		userModel.findOne({
-			username: username
-		}, callback);
-	};
-
-	this.findAllUsers = function (callback){
-		userModel.find(callback);
-	};
-
-	this.postUser = function (body, callback){
-		//Never use this directly!
-	}
-};
+module.exports = mongoose.model('users', userSchema)
