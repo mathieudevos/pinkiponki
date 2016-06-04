@@ -7,7 +7,7 @@ var crypto = require('crypto');
 var random = require('csprng');
 
 var users = require(ROOT + '/models/userModel.js');
-var userController = new(require(ROOT + '/controllers/userController'))
+var userController = new(require(ROOT + '/controllers/userController'));
 
 var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('user');

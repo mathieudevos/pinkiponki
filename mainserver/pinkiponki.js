@@ -6,6 +6,9 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose'); 
 var timeout = require('connect-timeout');
+var cookieParser = require('cookie-parser');
+var passport = require('passport');
+var expressSession = require('express-session');
 
 var app = express();
 
@@ -42,5 +45,13 @@ app.use(bodyParser.json({
 // Finally listen (normally create HTTP/HTTPS server)
 app.use('/', routes);
 app.listen(config.server.port);
+
+// Cookies
+app.use(cookieParser());
+
+// Passport
+//app.use(expressSession({secret: 'SecretzARE3edgy5me$$'}));
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 module.exports = app;

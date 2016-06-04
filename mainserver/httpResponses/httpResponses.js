@@ -34,14 +34,6 @@ module.exports = function (objectType) {
 			return;
 		},
 
-		sendLoginFAIL: function(res, message) {
-			var content = getFormattedJSON({
-				username: message.toString(),
-			});
-			writeStringResponse(res, 401, content);
-			return;
-		},
-
 		// Register
 		sendRegisterOK: function(res, message) {
 			var content = getFormattedJSON({

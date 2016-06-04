@@ -26,6 +26,7 @@ userSchema.methods.toJson = function(){
 		lastName: userObject.lastName ? userObject.lastName : null,
 		about: userObject.about ? userObject.about : null,
 		email: userObject.email ? userObject.email : null,
+		rating: userObject.rating ? userObject.rating : null
 		//clubs: userObject.clubs ? userObject.clubs : null,
 	};
 
