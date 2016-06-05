@@ -42,16 +42,17 @@ app.use(bodyParser.json({
   }
 }));
 
-// Finally listen (normally create HTTP/HTTPS server)
-app.use('/', routes);
-app.listen(config.server.port);
-
-// Cookies
+// Cookies (needed for passport)
 app.use(cookieParser());
 
 // Passport
-//app.use(expressSession({secret: 'SecretzARE3edgy5me$$'}));
-//app.use(passport.initialize());
-//app.use(passport.session());
+app.use(expressSession({secret: 'SecretzARE3edgy5me$$'}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Finally use routes w/ passport & listen on port
+var routes = require(ROOT + "routes/routes.js")(passport);
+app.use('/', routes);
+app.listen(config.server.port);
 
 module.exports = app;

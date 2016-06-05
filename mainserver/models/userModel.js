@@ -3,6 +3,7 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var mongoose = 	require('mongoose');
+var bcrypt = require('bcrypt');
 
 var userSchema = mongoose.Schema({
 	username: 		{ type: String, requried: true, unique: true},
@@ -12,11 +13,12 @@ var userSchema = mongoose.Schema({
 	about: 			{ type: String},
 	email: 			{ type: String},
 	//clubs: 			{ type: [{type: ObjectId, ref: "clubModel"}]},
-	salt:  			{ type: String},
 	rating:  		{ type: Number}
 });
 
-//JSON never send pw or salt (dööh)
+//Methods
+
+// toJSON
 userSchema.methods.toJson = function(){
 	var userObject = this.toObject();
 
@@ -32,5 +34,15 @@ userSchema.methods.toJson = function(){
 
 	return response;
 };
+
+// generate hash (bcrypt)
+userSchema.methods.generateHash = function(password){
+	return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+};
+
+// check pw
+userSchema.methods.validatePassword = function(newpw){
+	return bcrypt.compareSync(newpw, this.password);
+}
 
 module.exports = mongoose.model('users', userSchema)
