@@ -31,8 +31,14 @@
     "passport": "*",
     "passport-local": "*"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mathieudevos/pinkiponki.git"
+  },
+
   "database": "pinkiponki",
   "log_path": "/logs/",
-  "author": "Mathieu Devos"
+  "author": "Mathieu Devos",
+  "licence": "UNLICENSED"
 
 }
