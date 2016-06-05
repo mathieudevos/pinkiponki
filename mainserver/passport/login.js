@@ -11,20 +11,8 @@ var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('user');
 
 module.exports = function(passport) {
-	
-	// serialize user for the session
-	passport.serializeUser(function(user, done) {
-		done(null, user.id);
-	});
 
-	// deserialize the user
-	passport.deserializeUser(function(id, done){
-		users.findById(id, function(err, user){
-			done(err, user);
-		});
-	});
-
-	// signup!
+	// login!
 	passport.use('login', new localStrategy({
 		passReqToCallback: true
 	},
