@@ -33,7 +33,7 @@ module.exports = function(passport) {
 	router.post('/login', passport.authenticate('login', {failWithError: true}),
 		function(req, res, next){
 			// Handle success
-			log('Everything went ok. ' + req.user.username); //This never gets called, timeout before.
+			log('Login complete: ' + req.user.username);
 			httpResponses.sendLoginOK(res, req.user.username);
 			return ;
 		},

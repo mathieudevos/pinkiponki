@@ -30,8 +30,7 @@ module.exports = function(passport) {
 				log('Wrong password');
 				return done(null, false, {message: 'Fail login: ' + username});
 			}
-			log('All is good! \n' + user.toString());
-			return (null, user);
+			return done(null, user);
 		});
 		}
 	));
