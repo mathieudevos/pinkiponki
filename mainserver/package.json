@@ -26,6 +26,7 @@
     "connect-timeout": "*",
 
     "bcrypt": "*",
+    "bcrypt-nodejs": "*",
     "crypto": "*",
     "csprng": "*",
     "passport": "*",
@@ -39,6 +40,6 @@
   "database": "pinkiponki",
   "log_path": "/logs/",
   "author": "Mathieu Devos",
-  "licence": "UNLICENSED"
+  "license": "UNLICENSED"
 
 }

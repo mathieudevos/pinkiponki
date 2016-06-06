@@ -14,9 +14,6 @@ var app = express();
 
 module.exports = app;
 
-// Routes
-var routes = require(ROOT + '/routes/routes.js');
-
 var config = require(ROOT + '/config.json');
 log("HOSTNAME: " + config.server.host);
 log("    PORT: " + config.server.port);
@@ -50,8 +47,12 @@ app.use(expressSession({secret: 'SecretzARE3edgy5me$$'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Initialize passport
+var initPassport = require(ROOT + '/passport/init.js');
+initPassport(passport);
+
 // Finally use routes w/ passport & listen on port
-var routes = require(ROOT + "routes/routes.js")(passport);
+var routes = require(ROOT + "/routes/routes.js")(passport);
 app.use('/', routes);
 app.listen(config.server.port);
 

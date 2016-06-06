@@ -29,7 +29,7 @@ module.exports = function (objectType) {
 		sendLoginOK: function(res, message) {
 			var content = getFormattedJSON({
 				username: message.toString(),
-			});
+			})
 			writeStringResponse(res, 200, content);
 			return;
 		},
@@ -54,15 +54,15 @@ module.exports = function (objectType) {
 
 		// Error
 		sendError: function(res, error) {
-			log("Error occured: " + error.toString);
+			log("Error occured: " + error.toString());
 			var errorMsg = error ? error.toString() : "No error detail.";
 			writeStringResponse(res, 401, errorMsg);
 		},
 
-		sendFail: function(res, message) {
-			log("Fail occured: " + message.toString);
+		sendFail: function(res, msg) {
+			log("Fail occured: " + msg);
 			var content = getFormattedJSON({
-				message: message.toString(),
+				message: msg
 			});
 			writeStringResponse(res, 401, content);
 			return;

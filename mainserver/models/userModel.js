@@ -35,11 +35,6 @@ userSchema.methods.toJson = function(){
 	return response;
 };
 
-// generate hash (bcrypt)
-userSchema.methods.generateHash = function(password){
-	return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-};
-
 // check pw
 userSchema.methods.validatePassword = function(newpw){
 	return bcrypt.compareSync(newpw, this.password);

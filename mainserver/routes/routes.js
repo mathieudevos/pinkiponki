@@ -7,11 +7,10 @@ var express = require('express');
 var router = express.Router();
 
 // call all controllers
-var loginController = new(require(ROOT + '/controllers/login.js'));
-//var changepwdController = new(require(ROOT + '/controllers/changepwd.js'));
 var userController = new(require(ROOT + '/controllers/userController.js'));
-var registerController = new(require(ROOT + '/controllers/register.js'));
 var httpResponses = new(require(ROOT + '/httpResponses/httpResponses.js'));
+
+var bodyParser = require('body-parser');
 
 //This is where all the RESTful interactions happen.
 router.get("/", function(req, res){
@@ -24,31 +23,44 @@ router.get("/", function(req, res){
 var isAuthenticated = function (req, res, next){
 	if(req.isAuthenticated())
 		return next;
-	res.redirect('/login');
+	httpResponses.sendFail(res, "unAuthorized");
+	//res.redirect('/login');
 }
 
 module.exports = function(passport) {
 
 	//Login
-	router.post('/login', passport.authenticate('login', {
-		successRedirect: '/loginOK',
-		failureRedirect: '/login'
-	}));
+	router.post('/login', passport.authenticate('login', {failWithError: true}),
+		function(req, res, next){
+			// Handle success
+			log('Everything went ok. ' + req.user.username); //This never gets called, timeout before.
+			httpResponses.sendLoginOK(res, req.user.username);
+			return ;
+		},
+		function(err, req, res, next){
+			// Handle error
+			return res.json(err);
+		}
+	);
 
-	router.get('/loginOK', isAuthenticated, function(res, req){
-		httpResponses.sendLoginOK(res, req.user);
-	})
+	//Register
+	router.post('/register', passport.authenticate('register', {failWithError: true}),
+		function(req, res, next){
+			// Handle success
+			httpResponses.sendRegisterOK(res, req.user.username);
+			return ;
+		},
+		function(err, req, res, next){
+			// Handle error
+			return res.json(err);
+		}
+	);
 
 	//Logout
 	router.get('/logout', function(req, res){
 		var username = req.user;
 		req.logout();
 		httpResponses.sendLogout(res, username);
-	});
-
-	//Register
-	router.post('/register', function (req, res) {
-		registerController.register(req, res)
 	});
 
 	//User interactions
