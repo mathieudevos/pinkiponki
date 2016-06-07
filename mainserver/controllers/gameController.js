@@ -47,21 +47,24 @@ module.exports = function(){
 			log('Attempting to @POST game for author: ' req.body.author);
 
 			var newgame = new games({
-				teamA_player1: req.body.teamA_player1._id,
-				teamA_player2: req.body.teamA_player2._id,
-				teamB_player1: req.body.teamB_player1._id,
-				teamB_player2: req.body.teamB_player2._id,
+				teamA_player1: req.body.teamA_player1.username,
+				teamA_player2: req.body.teamA_player2.username,
+				teamB_player1: req.body.teamB_player1.username,
+				teamB_player2: req.body.teamB_player2.username,
 				teamA_score: req.body.teamA_score,
 				teamB_score: req.body.teamB_score,
-				verification: [req.body.author._id],
+				verification: [req.body.author.username],
 				verified: false,
-				author: req.body.author._id,
+				author: req.body.author.username,
 				timestamp: req.body.timestamp ? req.body.timestamp : new Date()
 			})
 
 			newgame.save(function(err){
-				if(err)
+				if(err){
 					httpResponses.sendError(res, err);
+					return;
+				}
+				//users.find() find the users, add the game to all of them!
 				httpResponses.respondObject(res, newgame);
 			});
 
@@ -70,7 +73,7 @@ module.exports = function(){
 			return;
 		},
 
-		postVerify: function(req, res){
+		postVerify: function(id, req, res){
 			log('Attempting to @POST verify for game');
 
 			//This can only get called by authed users, but better check anyway
@@ -79,7 +82,7 @@ module.exports = function(){
 					httpResponses.sendError(res, err);
 					return;
 				}
-				games.findOne({_id: req.body.id}, function(err, user){
+				games.findOne({_id: id}, function(err, user){
 					if(err){
 						httpResponses.sendError(res, req);
 						return;
@@ -114,8 +117,8 @@ module.exports = function(){
 			});
 		},
 
-		getGamesPerUser: function(req, res){
-			users.findOne({username: req.body.username}, function(err, user){
+		getGamesPerUser: function(username, req, res){
+			users.findOne({username: username}, function(err, user){
 				if(err){
 					httpResponses.sendError(res, err);
 					return;
@@ -132,8 +135,5 @@ module.exports = function(){
 			});
 			return;
 		}
-
-
-
 	}
 }

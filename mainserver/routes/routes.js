@@ -9,6 +9,7 @@ var router = express.Router();
 // call all controllers
 var userController = new(require(ROOT + '/controllers/userController.js'));
 var clubController = new(require(ROOT + '/controllers/clubController.js'));
+var gameController = new(require(ROOT + '/controllers/gameController.js'));
 var httpResponses = new(require(ROOT + '/httpResponses/httpResponses.js'));
 
 var bodyParser = require('body-parser');
@@ -98,7 +99,28 @@ module.exports = function(passport) {
 	});
 
 	//Game interactions
-	
+	router.post('/games', isAuthenticated, function(req, res){
+		log('@POST /games');
+		gameController.postGame(req, res);
+	});
+
+	router.post('/games/:id/verify', isAuthenticated, function(req, res){
+		log('@POST verify for game with id: ' + req.params.id);
+		gameController.postVerify(req.params.id, req, res);
+	});
+
+	router.get('/games', isAuthenticated, function(req, res){
+		log('@GET /games with id');
+		gameController.getGame(req.body.id, res);
+	});
+
+	router.get('/games/:username', isAuthenticated, function(req, res){
+		log('@GET 20 games for: ' + req.params.username);
+		gameController.getGamesPerUser(req.params.username, req, res);
+	}
+
+
+
 
 	//Error handling
 
