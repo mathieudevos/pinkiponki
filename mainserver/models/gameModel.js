@@ -13,17 +13,17 @@ var gameSchema = mongoose.Schema({
 	teamA_score: 		{ type: Number, required: true},
 	teamB_score: 		{ type: Number, required: true}, 
 	author: 			{ type: ObjectId, ref: "userModel", required: true},
-	verification: 		{ type: Number, required: true},
+	verification: 		{ type: ObjectId, ref: "userModel", required: true},
+	verified: 			{ type: Boolean},
 	timestamp: 			{ type: Date}
 });
 
 gameSchema.methods.toJson = function(){
 	var gameObject = this.toObject();
 
-	var verified = false;
-	if(verification>=3){
-		verified = true;
-	}
+	var verifies = [];
+	for(i in gameObject.verification)
+		verifies.push(gameObject.verification[i].username);
 
 	var response = {
 		teamA_player1: gameObject.teamA_player1.username ? gameObject.teamA_player1.username : null,
@@ -32,7 +32,8 @@ gameSchema.methods.toJson = function(){
 		teamB_player2: gameObject.teamB_player2.username ? gameObject.teamB_player2.username : null,
 		teamA_score: gameObject.teamA_score ? gameObject.teamA_score : 0,
 		teamB_score: gameObject.teamB_score ? gameObject.teamB_score : 0,
-		verification: verified,
+		verification: verifies,
+		verified: gameObject.verified ? gameObject.verified : false,
 		author: gameObject.author ? gameObject.author : null,
 		timestamp: gameObject.timestamp ? gameObject.timestamp : null
 	};
