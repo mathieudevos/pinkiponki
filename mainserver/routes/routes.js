@@ -21,8 +21,11 @@ router.get("/", function(req, res){
 
 // passport isAuthenticated function
 var isAuthenticated = function (req, res, next){
-	if(req.isAuthenticated())
-		return next;
+	if(req.isAuthenticated()){
+		log('You are authorized!');
+		return next();
+	}
+	log('unAuthorized, sending fail!');
 	httpResponses.sendFail(res, "unAuthorized");
 	//res.redirect('/login');
 }
@@ -65,11 +68,13 @@ module.exports = function(passport) {
 
 	//User interactions
 	router.get('/users', isAuthenticated, function (req, res) {
-		userController.getUsers(req, res)
+		log('@GET /users');
+		userController.getUsers(req, res);
 	});
 
 	router.get('/users/:username', isAuthenticated, function (req, res) {
-		userController.getUser(req, res)
+		log('@GET /users/:username');
+		userController.getUser(req, res);
 	});
 
 	//Error handling

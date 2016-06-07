@@ -3,12 +3,14 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 
 var express = require('express');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose'); 
+var mongoStore = require('connect-mongo/es5')(session);
 var timeout = require('connect-timeout');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
-var expressSession = require('express-session');
+var localStrategy = require('passport-local').Strategy;
 
 var app = express();
 
@@ -23,6 +25,8 @@ log("SSL PORT: " + config.server.sslport);
 mongoose.connect('mongodb://localhost/' + config.database);
 
 var db = mongoose.connection;
+
+app.use(ROOT + '/public', express.static('public'))
 
 app.use(timeout(config.timeout));
 
@@ -39,11 +43,21 @@ app.use(bodyParser.json({
   }
 }));
 
-// Cookies (needed for passport)
-app.use(cookieParser());
+// Session
+var sessionOptions = {
+  saveUninitialized: true, //save new sessions
+  resave: false,
+  store: new mongoStore({ 
+    mongooseConnection: db,
+    collection: 'sessions'
+    }),
+  secret: config.session.secret,
+  cookie: { httpOnly: true, maxAge: 3600000 }
+}
 
-// Passport
-app.use(expressSession({secret: 'SecretzARE3edgy5me$$'}));
+// Cookies, passport & session
+app.use(cookieParser(config.session.secret));
+app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 

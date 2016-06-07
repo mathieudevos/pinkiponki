@@ -3,12 +3,7 @@ var mask = require('json-mask');
 var HELPERS = require(ROOT + '/helpers/general.js');
 var log = HELPERS.log;
 
-function getFormattedJSON(myObject){
-	return JSON.stringify(myObject, null, 4) + '\n';
-};
-
 function writeStringResponse(res, status, responseString) {
-
 	var content = responseString.toString();
 	var md5 = HELPERS.md5(content);
 
@@ -20,7 +15,11 @@ function writeStringResponse(res, status, responseString) {
 	res.write(content);
 	res.end();
 	return;
-}
+};
+
+function getFormattedJSON(myObject){
+			return JSON.stringify(myObject, null, 4) + '\n';
+};
 
 module.exports = function (objectType) {
 	return {
@@ -66,6 +65,18 @@ module.exports = function (objectType) {
 			});
 			writeStringResponse(res, 401, content);
 			return;
+		},
+
+		respondObject: function(res, object){
+			writeStringResponse(res, 200, getFormattedJSON(object.toJson()));
+		},
+
+		respondObjects: function(res, objects){
+			var response = '';
+			var respObjects = [];
+			for(i in objects)
+				respObjects.push(mask(objects[i].toJson(), response));
+			writeStringResponse(res, 200, getFormattedJSON(respObjects));
 		}
 	}
 };

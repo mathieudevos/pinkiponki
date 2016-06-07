@@ -12,6 +12,9 @@
     "port": "9721",
     "sslport": "9722"
   },
+  "session": {
+    "secret": "SecretzARE3edgy5me$$"
+  },
 
   "api": "1"
 }
