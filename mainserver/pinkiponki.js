@@ -52,7 +52,7 @@ var sessionOptions = {
     collection: 'sessions'
     }),
   secret: config.session.secret,
-  cookie: { httpOnly: true, maxAge: 3600000 }
+  cookie: { httpOnly: true, maxAge: 31536000000 } //1y cookie timer
 }
 
 // Cookies, passport & session

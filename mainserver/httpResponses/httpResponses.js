@@ -58,6 +58,7 @@ module.exports = function (objectType) {
 			writeStringResponse(res, 401, errorMsg);
 		},
 
+		// Fail
 		sendFail: function(res, msg) {
 			log("Fail occured: " + msg);
 			var content = getFormattedJSON({
@@ -67,6 +68,7 @@ module.exports = function (objectType) {
 			return;
 		},
 
+		// General 
 		respondObject: function(res, object){
 			writeStringResponse(res, 200, getFormattedJSON(object.toJson()));
 		},
@@ -77,6 +79,15 @@ module.exports = function (objectType) {
 			for(i in objects)
 				respObjects.push(mask(objects[i].toJson(), response));
 			writeStringResponse(res, 200, getFormattedJSON(respObjects));
+		},
+
+		sendOK: function(res, msg){
+			log("Sending ok: " + msg);
+			var content = getFormattedJSON({
+				message: msg
+			});
+			writeStringResponse(res, 200, content);
+			return;
 		}
 	}
 };

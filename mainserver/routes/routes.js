@@ -8,6 +8,7 @@ var router = express.Router();
 
 // call all controllers
 var userController = new(require(ROOT + '/controllers/userController.js'));
+var clubController = new(require(ROOT + '/controllers/clubController.js'));
 var httpResponses = new(require(ROOT + '/httpResponses/httpResponses.js'));
 
 var bodyParser = require('body-parser');
@@ -73,8 +74,27 @@ module.exports = function(passport) {
 	});
 
 	router.get('/users/:username', isAuthenticated, function (req, res) {
-		log('@GET /users/:username');
+		log('@GET /users/' + req.body.username);
 		userController.getUser(req, res);
+	});
+
+	//Club interactions
+	router.post('/clubs', isAuthenticated, function (req, res) {
+		clubController.postClub(req, res);
+	});
+
+	router.get('/clubs/:clubname', isAuthenticated, function(req, res) {
+		log('@GET /clubs/' + req.body.clubname);
+		clubController.getClub(req, res);
+	});
+
+	router.get('/clubs', isAuthenticated, function(req, res) {
+		log('@GET /clubs');
+		clubController.getClubs(req, res);
+	});
+
+	router.post('/clubs/:clubname/addMember', isAuthenticated, function(req, res) {
+		clubController.addMember(req.params.clubname, req, res);
 	});
 
 	//Error handling
