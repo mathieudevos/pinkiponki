@@ -12,8 +12,8 @@ var httpResponses = httpResponsesModule('club');
 module.exports = function(){
 	return {
 
-		getClub: function(req, res){
-			clubs.findOne({clubname: req.body.clubname}, function(err, club){
+		getClub: function(clubname, res){
+			clubs.findOne({clubname: clubname}, function(err, club){
 				if (club){
 					log('found club!');
 					httpResponses.respondObject(res, club);

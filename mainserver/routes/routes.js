@@ -84,8 +84,8 @@ module.exports = function(passport) {
 	});
 
 	router.get('/clubs/:clubname', isAuthenticated, function(req, res) {
-		log('@GET /clubs/' + req.body.clubname);
-		clubController.getClub(req, res);
+		log('@GET /clubs/' + req.params.clubname);
+		clubController.getClub(req.params.clubname, res);
 	});
 
 	router.get('/clubs', isAuthenticated, function(req, res) {
@@ -96,6 +96,9 @@ module.exports = function(passport) {
 	router.post('/clubs/:clubname/addMember', isAuthenticated, function(req, res) {
 		clubController.addMember(req.params.clubname, req, res);
 	});
+
+	//Game interactions
+	
 
 	//Error handling
 

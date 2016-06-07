@@ -14,6 +14,7 @@ var userSchema = mongoose.Schema({
 	about: 			{ type: String},
 	email: 			{ type: String},
 	clubs: 			{ type: [{type: ObjectId, ref: "clubModel"}]},
+	games: 			{ type: [{type: ObjectId, ref: "gameModel"}]}, 
 	rating:  		{ type: Number}
 });
 
@@ -27,6 +28,10 @@ userSchema.methods.toJson = function(){
 	for (i in userObject.clubs)
 		clubs.push(userObject.clubs[i].clubname);
 
+	var games = [];
+	for (i in userObject.games)
+		games.push(userObject.games[i]._id);
+
 	var response = {
 		username: userObject.username ? userObject.username : null,
 		firstName: userObject.firstName ? userObject.firstName : null,
@@ -34,7 +39,8 @@ userSchema.methods.toJson = function(){
 		about: userObject.about ? userObject.about : null,
 		email: userObject.email ? userObject.email : null,
 		rating: userObject.rating ? userObject.rating : null,
-		clubs: userObject.clubs ? userObject.clubs : null
+		clubs: clubs,
+		games: games
 	};
 
 	return response;

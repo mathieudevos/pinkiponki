@@ -3,7 +3,6 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var mongoose = 	require('mongoose');
-var bcrypt = require('bcrypt');
 var ObjectId = mongoose.Schema.ObjectId;
 
 var clubSchema = mongoose.Schema({
