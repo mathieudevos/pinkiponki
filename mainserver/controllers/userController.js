@@ -12,8 +12,8 @@ var httpResponses = httpResponsesModule('user');
 module.exports = function () {
 	return {
 
-		getUser: function(req, res){
-			users.findOne({username: req.body.username}, function(err, user){
+		getUser: function(username, res){
+			users.findOne({username: username}, function(err, user){
 				if (user){
 					log('found user!');
 					httpResponses.respondObject(res, user);
@@ -34,6 +34,6 @@ module.exports = function () {
 			return ;
 		}
 
-		
+
 	}
 };

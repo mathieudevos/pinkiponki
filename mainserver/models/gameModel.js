@@ -6,14 +6,14 @@ var mongoose = 	require('mongoose');
 var ObjectId = mongoose.Schema.ObjectId;
 
 var gameSchema = mongoose.Schema({
-	teamA_player1: 		{ type: ObjectId, ref: "userModel", required: true},
-	teamA_player2: 		{ type: ObjectId, ref: "userModel", required: true},
-	teamB_player1: 		{ type: ObjectId, ref: "userModel", required: true},
-	teamB_player2: 		{ type: ObjectId, ref: "userModel", required: true},
+	teamA_player1: 		{ type: String, ref: "userModel", required: true},
+	teamA_player2: 		{ type: String, ref: "userModel", required: true},
+	teamB_player1: 		{ type: String, ref: "userModel", required: true},
+	teamB_player2: 		{ type: String, ref: "userModel", required: true},
 	teamA_score: 		{ type: Number, required: true},
 	teamB_score: 		{ type: Number, required: true}, 
-	author: 			{ type: ObjectId, ref: "userModel", required: true},
-	verification: 		{ type: ObjectId, ref: "userModel", required: true},
+	author: 			{ type: String, ref: "userModel", required: true},
+	verification: 		[{ type: String, ref: "userModel", required: true}],
 	verified: 			{ type: Boolean},
 	timestamp: 			{ type: Date}
 });
@@ -23,13 +23,14 @@ gameSchema.methods.toJson = function(){
 
 	var verifies = [];
 	for(i in gameObject.verification)
-		verifies.push(gameObject.verification[i].username);
+		verifies.push(gameObject.verification[i]);
 
 	var response = {
-		teamA_player1: gameObject.teamA_player1.username ? gameObject.teamA_player1.username : null,
-		teamA_player2: gameObject.teamA_player2.username ? gameObject.teamA_player2.username : null,
-		teamB_player1: gameObject.teamB_player1.username ? gameObject.teamB_player1.username : null,
-		teamB_player2: gameObject.teamB_player2.username ? gameObject.teamB_player2.username : null,
+		id: gameObject._id,
+		teamA_player1: gameObject.teamA_player1 ? gameObject.teamA_player1 : null,
+		teamA_player2: gameObject.teamA_player2 ? gameObject.teamA_player2 : null,
+		teamB_player1: gameObject.teamB_player1 ? gameObject.teamB_player1 : null,
+		teamB_player2: gameObject.teamB_player2 ? gameObject.teamB_player2 : null,
 		teamA_score: gameObject.teamA_score ? gameObject.teamA_score : 0,
 		teamB_score: gameObject.teamB_score ? gameObject.teamB_score : 0,
 		verification: verifies,

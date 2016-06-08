@@ -75,8 +75,8 @@ module.exports = function(passport) {
 	});
 
 	router.get('/users/:username', isAuthenticated, function (req, res) {
-		log('@GET /users/' + req.body.username);
-		userController.getUser(req, res);
+		log('@GET /users/' + req.params.username);
+		userController.getUser(req.params.username, res);
 	});
 
 	//Club interactions
@@ -117,6 +117,13 @@ module.exports = function(passport) {
 	router.get('/games/:username/:number', isAuthenticated, function(req, res){
 		log('@GET ' + req.params.number + ' games for: ' + req.params.username);
 		gameController.getGamesPerUser(req.params.username, req.params.number, req, res);
+	});
+
+	// Testing
+
+	router.post('/testFunc/:id', isAuthenticated, function(req, res){
+		log('testFunc');
+		gameController.postTest(req.params.id, res);
 	});
 
 	//Error handling

@@ -3,6 +3,8 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 
+var Math = require('mathjs');
+
 var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
 var games = require(ROOT + '/models/gameModel.js');
@@ -16,7 +18,7 @@ var isInVerification = function(username, game){
 	var gameObject = game.toObject();
 
 	for(i in gameObject.verification){
-		if(gameObject.verification.username == username){
+		if(gameObject.verification == username){
 			isInVerification = true;
 		}
 	}
@@ -26,10 +28,14 @@ var isInVerification = function(username, game){
 
 updateRating = function(game){
 	//This only gets called when verified is set to true
-	var a_1 = users.findOne({username: game.teamA_player1});
-	var a_2 = users.findOne({username: game.teamA_player2});
-	var b_1 = users.findOne({username: game.teamB_player1});
-	var b_2 = users.findOne({username: game.teamB_player2});
+	var a_1 = new users();
+	users.findOne({username: game.teamA_player1}, function(err, user){
+		if(user)
+			a_1 = user;		
+	});
+
+	log(a_1.toJson());
+
 
 	var a_rating_old = (a_1.rating+a_2.rating)/2;
 	var b_rating_old = (b_1.rating+b_2.rating)/2;
@@ -41,8 +47,8 @@ updateRating = function(game){
 		a_rating_new = ratingChange(a_rating_old, b_rating_old, true);
 		b_rating_new = ratingChange(b_rating_old, a_rating_old, false);
 	}else{
-		a_rating_new = ratingChange(a_rating_old, b_rating_old, true);
-		b_rating_new = ratingChange(b_rating_old, a_rating_old, false);
+		a_rating_new = ratingChange(a_rating_old, b_rating_old, false);
+		b_rating_new = ratingChange(b_rating_old, a_rating_old, true);
 	}
 
 	var a_rating_change = a_rating_new - a_rating_old;
@@ -57,15 +63,18 @@ updateRating = function(game){
 	a_2.save();
 	b_1.save();
 	b_2.save();
+	
 }
 
 var ratingChange = function(initialRating, opponentRating, victory){
 	var newRating = 0;
 
-	var initialRatingT = Math(10,(initialRating/400));
+	log('Initial rating: ' + ' - Opponent rating: ' + ' - Victory: ' + victory);
+
+	var initialRatingT = Math.pow(10,(initialRating/400.0));
 	log('Initial Rating Transform: ' + initialRatingT);
 
-	var opponentRatingT = Math(10,(opponentRating/400));
+	var opponentRatingT = Math.pow(10,(opponentRating/400.0));
 	log('Opponent Rating Transform: ' + opponentRatingT);
 
 	var victoryProbability = (initialRatingT / (initialRatingT+opponentRatingT));
@@ -80,6 +89,18 @@ var ratingChange = function(initialRating, opponentRating, victory){
 	log('Initial rating: ' + initialRating + " - New rating: " + newRating);
 
 	return newRating;
+}
+
+testFunc = function(gameid, res){
+	games.findOne({_id: gameid}, function(err, game){
+		if(game){
+			var a_1 = users.findOne({username: game.teamA_player1});
+			log(a_1);
+			a_1 = a_1.toObject();
+			log(a_1);
+		}
+	});
+	return;
 }
 
 module.exports = function(){
@@ -105,17 +126,19 @@ module.exports = function(){
 			log('Attempting to @POST game for author: ' + req.body.author);
 
 			var newgame = new games({
-				teamA_player1: req.body.teamA_player1.username,
-				teamA_player2: req.body.teamA_player2.username,
-				teamB_player1: req.body.teamB_player1.username,
-				teamB_player2: req.body.teamB_player2.username,
+				teamA_player1: req.body.teamA_player1,
+				teamA_player2: req.body.teamA_player2,
+				teamB_player1: req.body.teamB_player1,
+				teamB_player2: req.body.teamB_player2,
 				teamA_score: req.body.teamA_score,
 				teamB_score: req.body.teamB_score,
-				verification: [req.body.author.username],
+				verification: [req.body.author],
 				verified: false,
-				author: req.body.author.username,
+				author: req.body.author,
 				timestamp: req.body.timestamp ? req.body.timestamp : new Date()
 			});
+
+			log(newgame.toString());
 
 			newgame.save(function(err){
 				if(err){
@@ -160,47 +183,54 @@ module.exports = function(){
 		},
 
 		postVerify: function(id, req, res){
-			log('Attempting to @POST verify for game');
-
 			//This can only get called by authed users, but better check anyway
 			users.findOne({username: req.body.username}, function(err, user){
 				if(err){
 					httpResponses.sendError(res, err);
 					return;
 				}
-				games.findOne({_id: id}, function(err, user){
+				games.findOne({_id: id}, function(err, game){
 					if(err){
 						httpResponses.sendError(res, req);
 						return;
 					}
+					if(!game){
+						httpResponses.sendFail(res, "Could not find game.");
+						return;
+					}
 					//We have a user and a game, check if he was part of it.
-					if((user.username != game.author.username) && (!isInVerification(user.username, game))){
+					if((user.username != game.author) && (!isInVerification(user.username, game))){
 						switch(user.username){
-							case game.teamA_player1.username:
-								game.verified.push(user.username);
+							case game.teamA_player1:
+								log('a1');
+								game.verification.push(user.username);
 								break;
-							case game.teamA_player2.username:
-								game.verified.push(user.username);
+							case game.teamA_player2:
+								log('a2');
+								game.verification.push(user.username);
 								break;
-							case game.teamB_player1.username:
-								game.verified.push(user.username);
+							case game.teamB_player1:
+								log('b1');
+								game.verification.push(user.username);
 								break;
-							case game.teamB_player2.username:
-								game.verified.push(user.username);
+							case game.teamB_player2:
+								log('b2');
+								game.verification.push(user.username);
 								break;
 							default:
 								break;
-							log('Added user to verified: ' + user.username);
-
-							if(game.verification.length>=3){
-								game.verified = true;
-								updateRating(game);
-							}
-							game.save();
-
-							httpResponses.sendOK(res, 'Added user: ' + user.username + ' to verified.');
-							return;
 						}
+						log('Added user to verified: ' + user.username);
+
+						if(game.verification.length>=3){
+							log('updating ratings!');
+							game.verified = true;
+							updateRating(game);
+						}
+						game.save();
+
+						httpResponses.sendOK(res, 'Added user: ' + user.username + ' to verified.');
+						return;
 					}else{
 						httpResponses.sendFail(res, "Author cannot verify.");
 						return;
@@ -226,6 +256,11 @@ module.exports = function(){
 				httpResponses.sendObjects(res, gamez);
 			});
 			return;
+		},
+
+
+		postTest: function(gameid, res){
+			testFunc(gameid, res);
 		}
 	}
 }
