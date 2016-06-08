@@ -119,13 +119,6 @@ module.exports = function(passport) {
 		gameController.getGamesPerUser(req.params.username, req.params.number, req, res);
 	});
 
-	// Testing
-
-	router.post('/testFunc/:id', isAuthenticated, function(req, res){
-		log('testFunc');
-		gameController.postTest(req.params.id, res);
-	});
-
 	//Error handling
 
 	return router;

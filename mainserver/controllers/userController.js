@@ -32,6 +32,17 @@ module.exports = function () {
 				}
 			});
 			return ;
+		},
+
+		updateRating: function(username, newrating) {
+			users.findOne({username: username}, function(err, user){
+				if(user){
+					user.rating = newrating;
+					user.save();
+					log('User: ' + username + ", new rating: " + newrating);
+				}
+			});
+			return;
 		}
 
 

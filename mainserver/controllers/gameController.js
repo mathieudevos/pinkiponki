@@ -9,6 +9,7 @@ var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
 var games = require(ROOT + '/models/gameModel.js');
 
+var userController = require(ROOT + '/controllers/userController.js');
 var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('game');
 
@@ -28,17 +29,34 @@ var isInVerification = function(username, game){
 
 updateRating = function(game){
 	//This only gets called when verified is set to true
-	var a_1 = new users();
+	var a_1 = 0;
+	var a_2 = 0;
+	var b_1 = 0;
+	var b_2 = 0;
+
 	users.findOne({username: game.teamA_player1}, function(err, user){
 		if(user)
-			a_1 = user;		
+			a_1 = user.rating;		
 	});
 
-	log(a_1.toJson());
+	users.findOne({username: game.teamA_player2}, function(err, user){
+		if(user)
+			a_2 = user.rating;		
+	});
+
+	users.findOne({username: game.teamB_player1}, function(err, user){
+		if(user)
+			b_1 = user.rating;		
+	});
+
+	users.findOne({username: game.teamB_player2}, function(err, user){
+		if(user)
+			b_2 = user.rating;		
+	});
 
 
-	var a_rating_old = (a_1.rating+a_2.rating)/2;
-	var b_rating_old = (b_1.rating+b_2.rating)/2;
+	var a_rating_old = (a_1+a_2)/2;
+	var b_rating_old = (b_1+b_2)/2;
 
 	var a_rating_new = 0;
 	var b_rating_new = 0;
@@ -54,16 +72,15 @@ updateRating = function(game){
 	var a_rating_change = a_rating_new - a_rating_old;
 	var b_rating_change = b_rating_new - b_rating_old;
 
-	a_1.rating += Math.round(a_rating_change * (a_rating_old/a_1.rating));
-	a_2.rating += Math.round(a_rating_change * (a_rating_old/a_2.rating));
-	b_1.rating += Math.round(b_rating_change * (b_rating_old/b_1.rating));
-	b_2.rating += Math.round(b_rating_change * (b_rating_old/b_2.rating));
-
-	a_1.save();
-	a_2.save();
-	b_1.save();
-	b_2.save();
+	a_1 += Math.round(a_rating_change * (a_rating_old/a_1));
+	a_2 += Math.round(a_rating_change * (a_rating_old/a_2));
+	b_1 += Math.round(b_rating_change * (b_rating_old/b_1));
+	b_2 += Math.round(b_rating_change * (b_rating_old/b_2));
 	
+	userController.updateRating(game.teamA_player1, a_1);
+	userController.updateRating(game.teamA_player2, a_2);
+	userController.updateRating(game.teamB_player1, b_1);
+	userController.updateRating(game.teamB_player2, b_2);
 }
 
 var ratingChange = function(initialRating, opponentRating, victory){
@@ -89,18 +106,6 @@ var ratingChange = function(initialRating, opponentRating, victory){
 	log('Initial rating: ' + initialRating + " - New rating: " + newRating);
 
 	return newRating;
-}
-
-testFunc = function(gameid, res){
-	games.findOne({_id: gameid}, function(err, game){
-		if(game){
-			var a_1 = users.findOne({username: game.teamA_player1});
-			log(a_1);
-			a_1 = a_1.toObject();
-			log(a_1);
-		}
-	});
-	return;
 }
 
 module.exports = function(){
@@ -202,19 +207,15 @@ module.exports = function(){
 					if((user.username != game.author) && (!isInVerification(user.username, game))){
 						switch(user.username){
 							case game.teamA_player1:
-								log('a1');
 								game.verification.push(user.username);
 								break;
 							case game.teamA_player2:
-								log('a2');
 								game.verification.push(user.username);
 								break;
 							case game.teamB_player1:
-								log('b1');
 								game.verification.push(user.username);
 								break;
 							case game.teamB_player2:
-								log('b2');
 								game.verification.push(user.username);
 								break;
 							default:
@@ -256,11 +257,6 @@ module.exports = function(){
 				httpResponses.sendObjects(res, gamez);
 			});
 			return;
-		},
-
-
-		postTest: function(gameid, res){
-			testFunc(gameid, res);
 		}
 	}
 }
