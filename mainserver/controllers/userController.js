@@ -34,6 +34,6 @@ module.exports = function () {
 			return ;
 		}
 
-		//To add clubs: see clubController
+		
 	}
 };

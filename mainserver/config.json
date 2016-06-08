@@ -16,5 +16,6 @@
     "secret": "SecretzARE3edgy5me$$"
   },
 
-  "api": "1"
+  "api": "1",
+  "Kfactor": "32"
 }

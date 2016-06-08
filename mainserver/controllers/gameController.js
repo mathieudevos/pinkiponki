@@ -24,6 +24,64 @@ var isInVerification = function(username, game){
 	return isInVerification;
 }
 
+updateRating = function(game){
+	//This only gets called when verified is set to true
+	var a_1 = users.findOne({username: game.teamA_player1});
+	var a_2 = users.findOne({username: game.teamA_player2});
+	var b_1 = users.findOne({username: game.teamB_player1});
+	var b_2 = users.findOne({username: game.teamB_player2});
+
+	var a_rating_old = (a_1.rating+a_2.rating)/2;
+	var b_rating_old = (b_1.rating+b_2.rating)/2;
+
+	var a_rating_new = 0;
+	var b_rating_new = 0;
+
+	if(game.teamA_score>game.teamB_score){
+		a_rating_new = ratingChange(a_rating_old, b_rating_old, true);
+		b_rating_new = ratingChange(b_rating_old, a_rating_old, false);
+	}else{
+		a_rating_new = ratingChange(a_rating_old, b_rating_old, true);
+		b_rating_new = ratingChange(b_rating_old, a_rating_old, false);
+	}
+
+	var a_rating_change = a_rating_new - a_rating_old;
+	var b_rating_change = b_rating_new - b_rating_old;
+
+	a_1.rating += Math.round(a_rating_change * (a_rating_old/a_1.rating));
+	a_2.rating += Math.round(a_rating_change * (a_rating_old/a_2.rating));
+	b_1.rating += Math.round(b_rating_change * (b_rating_old/b_1.rating));
+	b_2.rating += Math.round(b_rating_change * (b_rating_old/b_2.rating));
+
+	a_1.save();
+	a_2.save();
+	b_1.save();
+	b_2.save();
+}
+
+var ratingChange = function(initialRating, opponentRating, victory){
+	var newRating = 0;
+
+	var initialRatingT = Math(10,(initialRating/400));
+	log('Initial Rating Transform: ' + initialRatingT);
+
+	var opponentRatingT = Math(10,(opponentRating/400));
+	log('Opponent Rating Transform: ' + opponentRatingT);
+
+	var victoryProbability = (initialRatingT / (initialRatingT+opponentRatingT));
+	log('Victory probability: ' + victoryProbability);
+
+	if(victory){
+		newRating = initialRating + config.Kfactor * (1 - victoryProbability);
+	}else{
+		newRating = initialRating - config.Kfactor * victoryProbability;
+	}
+
+	log('Initial rating: ' + initialRating + " - New rating: " + newRating);
+
+	return newRating;
+}
+
 module.exports = function(){
 	return {
 
@@ -44,7 +102,7 @@ module.exports = function(){
 		},
 
 		postGame: function(req, res){
-			log('Attempting to @POST game for author: ' req.body.author);
+			log('Attempting to @POST game for author: ' + req.body.author);
 
 			var newgame = new games({
 				teamA_player1: req.body.teamA_player1.username,
@@ -57,19 +115,47 @@ module.exports = function(){
 				verified: false,
 				author: req.body.author.username,
 				timestamp: req.body.timestamp ? req.body.timestamp : new Date()
-			})
+			});
 
 			newgame.save(function(err){
 				if(err){
 					httpResponses.sendError(res, err);
 					return;
 				}
-				//users.find() find the users, add the game to all of them!
+				users.findOne({username: newgame.teamA_player1}, function(err, user){
+					if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					user.games.push(newgame._id);
+					user.save();
+				});
+				users.findOne({username: newgame.teamA_player2}, function(err, user){
+					if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					user.games.push(newgame._id);
+					user.save();
+				});
+				users.findOne({username: newgame.teamB_player1}, function(err, user){
+					if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					user.games.push(newgame._id);
+					user.save();
+				});
+				users.findOne({username: newgame.teamB_player2}, function(err, user){
+					if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					user.games.push(newgame._id);
+					user.save();
+				});
 				httpResponses.respondObject(res, newgame);
 			});
-
-			//todo: add the games to the users as well!
-
 			return;
 		},
 
@@ -88,7 +174,7 @@ module.exports = function(){
 						return;
 					}
 					//We have a user and a game, check if he was part of it.
-					if(user.username != game.author.username && (!isInVerification(user.username, game)){
+					if((user.username != game.author.username) && (!isInVerification(user.username, game))){
 						switch(user.username){
 							case game.teamA_player1.username:
 								game.verified.push(user.username);
@@ -104,8 +190,14 @@ module.exports = function(){
 								break;
 							default:
 								break;
-							game.save();
 							log('Added user to verified: ' + user.username);
+
+							if(game.verification.length>=3){
+								game.verified = true;
+								updateRating(game);
+							}
+							game.save();
+
 							httpResponses.sendOK(res, 'Added user: ' + user.username + ' to verified.');
 							return;
 						}
@@ -117,7 +209,7 @@ module.exports = function(){
 			});
 		},
 
-		getGamesPerUser: function(username, req, res){
+		getGamesPerUser: function(username, number, req, res){
 			users.findOne({username: username}, function(err, user){
 				if(err){
 					httpResponses.sendError(res, err);
@@ -128,8 +220,8 @@ module.exports = function(){
 					gamez.unshift(user.games[i]);
 					//now it's sorted
 				}
-				if(gamez.length()>20){
-					gamez = gamez.splice(20,(gamez.length-20));
+				if(gamez.length()>number){
+					gamez = gamez.splice(number,(gamez.length-number));
 				}
 				httpResponses.sendObjects(res, gamez);
 			});

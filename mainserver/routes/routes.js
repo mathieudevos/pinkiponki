@@ -114,13 +114,10 @@ module.exports = function(passport) {
 		gameController.getGame(req.body.id, res);
 	});
 
-	router.get('/games/:username', isAuthenticated, function(req, res){
-		log('@GET 20 games for: ' + req.params.username);
-		gameController.getGamesPerUser(req.params.username, req, res);
-	}
-
-
-
+	router.get('/games/:username/:number', isAuthenticated, function(req, res){
+		log('@GET ' + req.params.number + ' games for: ' + req.params.username);
+		gameController.getGamesPerUser(req.params.username, req.params.number, req, res);
+	});
 
 	//Error handling
 
