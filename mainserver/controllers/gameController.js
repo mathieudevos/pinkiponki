@@ -9,7 +9,7 @@ var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
 var games = require(ROOT + '/models/gameModel.js');
 
-var userController = require(ROOT + '/controllers/userController.js');
+var userController = new(require(ROOT + '/controllers/userController.js'));
 var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('game');
 
@@ -29,31 +29,46 @@ var isInVerification = function(username, game){
 
 updateRating = function(game){
 	//This only gets called when verified is set to true
-	var a_1 = 0;
-	var a_2 = 0;
-	var b_1 = 0;
-	var b_2 = 0;
+	var done = 0;
 
-	users.findOne({username: game.teamA_player1}, function(err, user){
-		if(user)
-			a_1 = user.rating;		
+	var a_1;
+	var a_2;
+	var b_1;
+	var b_2;
+
+	// should really call this shit in a sync way (looking at your deasync npm!)
+
+	users.findOne({username: game.teamA_player1}, function(err, usera1){
+		if(usera1)
+			a_1 = usera1.rating;
+		done += 1;
+	});
+	users.findOne({username: game.teamA_player2}, function(err, usera2){
+		if(usera2)
+			a_2 = usera2.rating;
+		done += 1;
+	});
+	users.findOne({username: game.teamB_player1}, function(err, userb1){
+		if(userb1)
+			b_1 = userb1.rating;
+		done += 1;
+	});
+	users.findOne({username: game.teamB_player2}, function(err, userb2){
+		if(userb2)
+			b_2 = userb2.rating;
+		done += 1;
 	});
 
-	users.findOne({username: game.teamA_player2}, function(err, user){
-		if(user)
-			a_2 = user.rating;		
-	});
+	//Keep looping on deasync until we find all 4
+	require('deasync').loopWhile(function(){return (done!=4);});
+	
+	if(a_1 == undefined || a_2 == undefined || b_1 == undefined || b_2 == undefined){
+		// could not find a user probably
+		log('Value undefined, error');
+		return;
+	}
 
-	users.findOne({username: game.teamB_player1}, function(err, user){
-		if(user)
-			b_1 = user.rating;		
-	});
-
-	users.findOne({username: game.teamB_player2}, function(err, user){
-		if(user)
-			b_2 = user.rating;		
-	});
-
+	log(a_1 + ', ' + a_2 + ', ' + b_1 + ', ' + b_2);
 
 	var a_rating_old = (a_1+a_2)/2;
 	var b_rating_old = (b_1+b_2)/2;

@@ -25,6 +25,7 @@
     "json-mask": "0.3.5",
     "node-uuid": "*",
     "connect-timeout": "*",
+    "deasync": "*",
 
     "bcrypt": "*",
     "bcrypt-nodejs": "*",

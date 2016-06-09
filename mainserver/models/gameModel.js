@@ -15,7 +15,8 @@ var gameSchema = mongoose.Schema({
 	author: 			{ type: String, ref: "userModel", required: true},
 	verification: 		[{ type: String, ref: "userModel", required: true}],
 	verified: 			{ type: Boolean},
-	timestamp: 			{ type: Date}
+	timestamp: 			{ type: Date},
+	about: 				{ type: String}
 });
 
 gameSchema.methods.toJson = function(){
@@ -36,7 +37,8 @@ gameSchema.methods.toJson = function(){
 		verification: verifies,
 		verified: gameObject.verified ? gameObject.verified : false,
 		author: gameObject.author ? gameObject.author : null,
-		timestamp: gameObject.timestamp ? gameObject.timestamp : null
+		timestamp: gameObject.timestamp ? gameObject.timestamp : null,
+		about: gameObject.about ? gameObject.about : null
 	};
 
 	return response;
