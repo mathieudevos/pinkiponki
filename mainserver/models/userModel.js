@@ -17,7 +17,7 @@ var userSchema = mongoose.Schema({
 	games: 			{ type: [{type: ObjectId, ref: "games"}]}, 
 	rating:  		{ type: Number},
 	maxRating: 		{ type: Number},
-	friends: 		{ type: [{Type: String, ref: "users"}]},
+	//friends: 		{ type: [{Type: String, ref: "users"}]},
 	friendsTimeline: { type: [{type: ObjectId, ref: "games"}]},
 	created: 		{ type: Date},
 	lastSeen:  		{ type: Date}
