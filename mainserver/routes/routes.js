@@ -116,7 +116,12 @@ module.exports = function(passport) {
 
 	router.get('/games/:username/:number', isAuthenticated, function(req, res){
 		log('@GET ' + req.params.number + ' games for: ' + req.params.username);
-		gameController.getGamesPerUser(req.params.username, req.params.number, req, res);
+		userController.getGamesPerUser(req.params.username, req.params.number, req, res);
+	});
+
+	router.get('/friendsTimeline/:number', isAuthenticated, function(req, res){
+		log('@GET ' + req.params.number + ' friendsTimeline games for: ' + req.user.username);
+		userController.getGamesTimeline(req.user.username, req.params.number, req, res);
 	});
 
 	//Error handling

@@ -165,38 +165,12 @@ module.exports = function(){
 					httpResponses.sendError(res, err);
 					return;
 				}
-				users.findOne({username: newgame.teamA_player1}, function(err, user){
-					if(err){
-						httpResponses.sendError(res, err);
-						return;
-					}
-					user.games.push(newgame._id);
-					user.save();
-				});
-				users.findOne({username: newgame.teamA_player2}, function(err, user){
-					if(err){
-						httpResponses.sendError(res, err);
-						return;
-					}
-					user.games.push(newgame._id);
-					user.save();
-				});
-				users.findOne({username: newgame.teamB_player1}, function(err, user){
-					if(err){
-						httpResponses.sendError(res, err);
-						return;
-					}
-					user.games.push(newgame._id);
-					user.save();
-				});
-				users.findOne({username: newgame.teamB_player2}, function(err, user){
-					if(err){
-						httpResponses.sendError(res, err);
-						return;
-					}
-					user.games.push(newgame._id);
-					user.save();
-				});
+
+				userController.addGame(newgame.teamA_player1);
+				userController.addGame(newgame.teamA_player2);
+				userController.addGame(newgame.teamB_player1);
+				userController.addGame(newgame.teamB_player2);
+
 				httpResponses.respondObject(res, newgame);
 			});
 			return;
@@ -253,25 +227,6 @@ module.exports = function(){
 					}
 				});
 			});
-		},
-
-		getGamesPerUser: function(username, number, req, res){
-			users.findOne({username: username}, function(err, user){
-				if(err){
-					httpResponses.sendError(res, err);
-					return;
-				}
-				var gamez = [];
-				for(i in user.games){
-					gamez.unshift(user.games[i]);
-					//now it's sorted
-				}
-				if(gamez.length()>number){
-					gamez = gamez.splice(number,(gamez.length-number));
-				}
-				httpResponses.sendObjects(res, gamez);
-			});
-			return;
 		}
 	}
 }
