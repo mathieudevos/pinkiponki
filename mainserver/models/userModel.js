@@ -13,12 +13,12 @@ var userSchema = mongoose.Schema({
 	lastName: 		{ type: String},
 	about: 			{ type: String},
 	email: 			{ type: String},
-	clubs: 			{ type: [{type: String, ref: "clubModel"}]},
-	games: 			{ type: [{type: ObjectId, ref: "gameModel"}]}, 
+	clubs: 			{ type: [{type: String, ref: "clubs"}]},
+	games: 			{ type: [{type: ObjectId, ref: "games"}]}, 
 	rating:  		{ type: Number},
 	maxRating: 		{ type: Number},
-	friends: 		{ type: [this]},
-	friendsTimeline: { type: [{type: ObjectId, ref: "gameModel"}]},
+	friends: 		{ type: [{Type: String, ref: "users"}]},
+	friendsTimeline: { type: [{type: ObjectId, ref: "games"}]},
 	created: 		{ type: Date},
 	lastSeen:  		{ type: Date}
 });

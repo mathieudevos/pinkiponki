@@ -79,6 +79,16 @@ module.exports = function(passport) {
 		userController.getUser(req.params.username, res);
 	});
 
+	router.get('/friendsTimeline/:number', isAuthenticated, function(req, res){
+		log('@GET ' + req.params.number + ' friendsTimeline games for: ' + req.user.username);
+		userController.getGamesTimeline(req.user.username, req.params.number, req, res);
+	});
+
+	router.post('/friends/:friendname', isAuthenticated, function(req, res){
+		log('@POST /friends/ to add friend: ' + req.params.friendname + ' for user: ' + req.user.username);
+		userController.addFriend(req.user.username, req.params.friendname, true, req, res);
+	});
+
 	//Club interactions
 	router.post('/clubs', isAuthenticated, function (req, res) {
 		clubController.postClub(req, res);
@@ -119,10 +129,7 @@ module.exports = function(passport) {
 		userController.getGamesPerUser(req.params.username, req.params.number, req, res);
 	});
 
-	router.get('/friendsTimeline/:number', isAuthenticated, function(req, res){
-		log('@GET ' + req.params.number + ' friendsTimeline games for: ' + req.user.username);
-		userController.getGamesTimeline(req.user.username, req.params.number, req, res);
-	});
+
 
 	//Error handling
 

@@ -6,14 +6,14 @@ var mongoose = 	require('mongoose');
 var ObjectId = mongoose.Schema.ObjectId;
 
 var gameSchema = mongoose.Schema({
-	teamA_player1: 		{ type: String, ref: "userModel", required: true},
-	teamA_player2: 		{ type: String, ref: "userModel", required: true},
-	teamB_player1: 		{ type: String, ref: "userModel", required: true},
-	teamB_player2: 		{ type: String, ref: "userModel", required: true},
+	teamA_player1: 		{ type: String, ref: "users", required: true},
+	teamA_player2: 		{ type: String, ref: "users", required: true},
+	teamB_player1: 		{ type: String, ref: "users", required: true},
+	teamB_player2: 		{ type: String, ref: "users", required: true},
 	teamA_score: 		{ type: Number, required: true},
 	teamB_score: 		{ type: Number, required: true}, 
-	author: 			{ type: String, ref: "userModel", required: true},
-	verification: 		[{ type: String, ref: "userModel", required: true}],
+	author: 			{ type: String, ref: "users", required: true},
+	verification: 		[{ type: String, ref: "users", required: true}],
 	verified: 			{ type: Boolean},
 	timestamp: 			{ type: Date},
 	about: 				{ type: String}

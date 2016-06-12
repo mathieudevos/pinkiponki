@@ -12,7 +12,7 @@ var clubSchema = mongoose.Schema({
 	color: 			{ type: String},
 	maxMembers: 	{ type: Number},
 	authKey: 		{ type: String, required: true},
-	members: 		{ type: [{type: ObjectId, ref: "userModel"}]},
+	members: 		{ type: [{type: ObjectId, ref: "users"}]},
 	rating: 		{ type: Number}
 });
 

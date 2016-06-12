@@ -9,6 +9,15 @@ var clubs = require(ROOT + '/models/clubModel.js');
 var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('user');
 
+var hasAsFriend = function(friendlist, friendname){
+	for(i in friendlist){
+		if(friendlist[i] == friendname){
+			return true;
+		}
+	}
+	return false;
+}
+
 module.exports = function () {
 	return {
 
@@ -129,6 +138,25 @@ module.exports = function () {
 				}
 			});
 			return;
+		},
+
+		addFriend: function(username, friendname, firstfunction, req, res){
+			users.findOne({username: username}, function(err, user){
+				users.findOne({username: friendname}, function(err, friend){
+					if(!hasAsFriend(user.friends, friendname)){
+						user.friends.push(friendname);
+						user.save();
+						if(firstfunction){
+							addFriend(friendname, username, false); 
+							httpResponses.sendOK(res, "friend added - " + friendname);
+							return;
+						}
+					}
+				});
+			});
+			if(req!=undefined && res!=undefined){
+				httpResponses.sendFail("friend adding fail - " + friendname);
+			}
 		}
 	}
 };
