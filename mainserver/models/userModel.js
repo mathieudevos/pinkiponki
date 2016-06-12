@@ -7,17 +7,17 @@ var bcrypt = require('bcrypt');
 var ObjectId = mongoose.Schema.ObjectId;
 
 var userSchema = mongoose.Schema({
-	username: 		{ type: String, required: true, unique: true},
+	username: 		{ type: String, required: true, unique: true, lowercase: true},
 	password: 		{ type: String, required: true},
 	firstName: 		{ type: String},
 	lastName: 		{ type: String},
 	about: 			{ type: String},
-	email: 			{ type: String},
+	email: 			{ type: String, lowercase: true},
 	clubs: 			{ type: [{type: String, ref: "clubs"}]},
 	games: 			{ type: [{type: ObjectId, ref: "games"}]}, 
 	rating:  		{ type: Number},
 	maxRating: 		{ type: Number},
-	//friends: 		{ type: [{Type: String, ref: "users"}]},
+	friends: 		{ type: [{Type: String}]},
 	friendsTimeline: { type: [{type: ObjectId, ref: "games"}]},
 	created: 		{ type: Date},
 	lastSeen:  		{ type: Date}
@@ -37,15 +37,27 @@ userSchema.methods.toJson = function(){
 	for (i in userObject.games)
 		games.push(userObject.games[i]._id);
 
+	var friends = [];
+	for (i in userObject.friends)
+		friends.push(userObject.friends[i]);
+
+	var friendsTimeline = [];
+	for (i in userObject.friendsTimeline[i]);
+
 	var response = {
 		username: userObject.username ? userObject.username : null,
 		firstName: userObject.firstName ? userObject.firstName : null,
 		lastName: userObject.lastName ? userObject.lastName : null,
 		about: userObject.about ? userObject.about : null,
 		email: userObject.email ? userObject.email : null,
-		rating: userObject.rating ? userObject.rating : null,
 		clubs: clubs,
-		games: games
+		games: games,
+		rating: userObject.rating ? userObject.rating : null,
+		maxRating: userObject.maxRating ? userObject.maxRating : null,
+		friends: friends,
+		friendsTimeline: friendsTimeline,
+		created: userObject.created ? userObject.created : null,
+		lastSeen: userObject.lastSeen ? userObject.lastSeen : null
 	};
 
 	return response;
