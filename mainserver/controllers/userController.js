@@ -85,7 +85,7 @@ module.exports = function () {
 		addGameFromFriend: function(username, gameid){
 			users.findOne({username: username}, function(err, user){
 				if(user){
-					Boolean isInList = false;
+					var isInList = false;
 					for(i in user.friendsTimeline){
 						if(gameid == user.friendsTimeline[i]){
 							isInList = true;
