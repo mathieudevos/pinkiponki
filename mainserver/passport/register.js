@@ -28,10 +28,7 @@ module.exports = function(passport) {
 			var newuser = new users({
 				username: username,
 				email: req.body.email,
-				firstname: req.body.firstname,
-				lastname: req.body.lastname,
 				password: generateHash(password),
-				about: req.body.about,
 				rating: 1200
 			});
 			newuser.save(function (err){
