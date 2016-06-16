@@ -25,23 +25,19 @@ module.exports = function(passport) {
 				// User already exists
 				return done(null, false, {message: 'User already exists'});
 			}
-			if(password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) && password.length > 4 && password.match(/[0-9]/) && password.match(/.[!,@,#,$,%,^,&,*,?,_,~]/)){
-				var newuser = new users({
-					username: username,
-					email: req.body.email,
-					firstname: req.body.firstname,
-					lastname: req.body.lastname,
-					password: generateHash(password),
-					about: req.body.about,
-					rating: 1200
-				});
-				newuser.save(function (err){
-					if (err) {return done(null, false, {error: err.toString()});}
-					return done(null, newuser, {username: username});
-				});
-			} else {
-				return done(null, false, {message: 'Password not strong enough.'});
-			}
+			var newuser = new users({
+				username: username,
+				email: req.body.email,
+				firstname: req.body.firstname,
+				lastname: req.body.lastname,
+				password: generateHash(password),
+				about: req.body.about,
+				rating: 1200
+			});
+			newuser.save(function (err){
+				if (err) {return done(null, false, {error: err.toString()});}
+				return done(null, newuser, {username: username});
+			});
 		});
 	}));
 
