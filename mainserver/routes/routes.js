@@ -129,7 +129,7 @@ module.exports = function(passport) {
 		userController.getGamesPerUser(req.params.username, req.params.number, req, res);
 	});
 
-	router.get('/games/all/:number', isAuthenticated, function(req, res){
+	router.get('/games_all/:number', isAuthenticated, function(req, res){
 		log('@GET general games, number: ' + req.params.number);
 		gameController.getGames(req.params.number, res);
 	});
