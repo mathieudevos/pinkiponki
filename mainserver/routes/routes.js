@@ -119,14 +119,19 @@ module.exports = function(passport) {
 		gameController.postVerify(req.params.id, req, res);
 	});
 
-	router.get('/games', isAuthenticated, function(req, res){
+	router.get('/games/:id', isAuthenticated, function(req, res){
 		log('@GET /games with id');
-		gameController.getGame(req.body.id, res);
+		gameController.getGame(req.params.id, res);
 	});
 
 	router.get('/games/:username/:number', isAuthenticated, function(req, res){
 		log('@GET ' + req.params.number + ' games for: ' + req.params.username);
 		userController.getGamesPerUser(req.params.username, req.params.number, req, res);
+	});
+
+	router.get('/games/all/:number', isAuthenticated, function(req, res){
+		log('@GET general games, number: ' + req.params.number);
+		gameController.getGames(req.params.number, res);
 	});
 
 

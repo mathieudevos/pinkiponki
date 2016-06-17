@@ -185,7 +185,7 @@ module.exports = function(){
 				}
 				games.findOne({_id: id}, function(err, game){
 					if(err){
-						httpResponses.sendError(res, req);
+						httpResponses.sendError(res, err);
 						return;
 					}
 					if(!game){
@@ -226,6 +226,17 @@ module.exports = function(){
 						return;
 					}
 				});
+			});
+		},
+
+		getGames: function(number, res){
+			games.find({},{limit:number,sort:{timestamp: -1}},function(err, gamez){
+				if(err){
+					httpResponses.sendError(res, err);
+					return;
+				}
+				httpResponses.sendObjects(res, gamez);
+				return;
 			});
 		}
 	}
