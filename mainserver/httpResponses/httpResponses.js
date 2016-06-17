@@ -74,6 +74,7 @@ module.exports = function (objectType) {
 		},
 
 		respondObjects: function(res, objects){
+			log('Responding with ' + objects.length + ' objects');
 			var response = '';
 			var respObjects = [];
 			for(i in objects)
