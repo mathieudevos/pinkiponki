@@ -230,14 +230,17 @@ module.exports = function(){
 		},
 
 		getGames: function(number, res){
-			games.find({},{limit:number,sort:{timestamp: -1}},function(err, gamez){
-				if(err){
-					httpResponses.sendError(res, err);
+			games.find({})
+				 .limit(20)
+				 .sort({timestamp: -1})
+				 .exec(function(err, gamez){
+				 	if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					httpResponses.sendObjects(res, gamez);
 					return;
-				}
-				httpResponses.sendObjects(res, gamez);
-				return;
-			});
+				 });
 		}
 	}
 }
