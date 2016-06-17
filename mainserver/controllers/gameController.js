@@ -238,7 +238,7 @@ module.exports = function(){
 						httpResponses.sendError(res, err);
 						return;
 					}
-					httpResponses.sendObjects(res, gamez);
+					httpResponses.respondObjects(res, gamez);
 					return;
 				 });
 		}
