@@ -157,6 +157,20 @@ module.exports = function () {
 			if(req!=undefined && res!=undefined){
 				httpResponses.sendFail("friend adding fail - " + friendname);
 			}
+		},
+
+		getUsernames: function(req, res){
+			users.find({})
+				 .sort({username: 1})
+				 .select({username: 1})
+				 .exec(function(err, usernames){
+				 	if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					httpResponses.respondObjects(res, usernames);
+					return;
+				 });
 		}
 	}
 };

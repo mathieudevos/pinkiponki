@@ -89,6 +89,11 @@ module.exports = function(passport) {
 		userController.addFriend(req.user.username, req.params.friendname, true, req, res);
 	});
 
+	router.get('/usernames', isAuthenticated, function(req, res){
+		log('@GET  /usernames');
+		userController.getUsernames(req, res);
+	});
+
 	//Club interactions
 	router.post('/clubs', isAuthenticated, function (req, res) {
 		clubController.postClub(req, res);
@@ -133,6 +138,7 @@ module.exports = function(passport) {
 		log('@GET general games, number: ' + req.params.number);
 		gameController.getGames(req.params.number, res);
 	});
+
 
 
 

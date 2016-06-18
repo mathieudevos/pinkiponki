@@ -79,6 +79,7 @@ module.exports = function (objectType) {
 			var respObjects = [];
 			for(i in objects)
 				respObjects.push(mask(objects[i].toJson(), response));
+			log('Response: ' + getFormattedJSON(respObjects).toString());
 			writeStringResponse(res, 200, getFormattedJSON(respObjects));
 		},
 
