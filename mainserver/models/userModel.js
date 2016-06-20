@@ -42,7 +42,8 @@ userSchema.methods.toJson = function(){
 		friends.push(userObject.friends[i]);
 
 	var friendsTimeline = [];
-	for (i in userObject.friendsTimeline[i]);
+	for (i in userObject.friendsTimeline)
+		friendsTimeline.push(userObject.friendsTimeline[i]);
 
 	var response = {
 		username: userObject.username ? userObject.username : null,
