@@ -162,13 +162,17 @@ module.exports = function () {
 		getUsernames: function(req, res){
 			users.find({})
 				 .sort({username: 1})
-				 .select({username: 1})
-				 .exec(function(err, usernames){
+				 .select({username : 1, _id : 0})
+				 .exec(function(err, userz){
 				 	if(err){
 						httpResponses.sendError(res, err);
 						return;
 					}
-					httpResponses.respondObjects(res, usernames);
+					response = [];
+					for(i in userz)
+						response.push(userz[i].username);
+					log(response);
+					httpResponses.respondPureString(res, response);
 					return;
 				 });
 		}

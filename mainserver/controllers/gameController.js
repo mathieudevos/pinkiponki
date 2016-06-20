@@ -230,7 +230,7 @@ module.exports = function(){
 		},
 
 		getGames: function(number, res){
-			games.find({})
+			games.find({}, '')
 				 .limit(20)
 				 .sort({timestamp: -1})
 				 .exec(function(err, gamez){

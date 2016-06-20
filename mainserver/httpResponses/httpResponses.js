@@ -83,6 +83,12 @@ module.exports = function (objectType) {
 			writeStringResponse(res, 200, getFormattedJSON(respObjects));
 		},
 
+		respondPureString: function(res, input){
+			var response = JSON.stringify(input);
+			log('Response: ' + response);
+			writeStringResponse(res, 200, response);
+		},
+
 		sendOK: function(res, msg){
 			log("Sending ok: " + msg);
 			var content = getFormattedJSON({
