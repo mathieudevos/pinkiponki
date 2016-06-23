@@ -140,6 +140,13 @@ module.exports = function(passport) {
 	});
 
 
+	//Location interactions
+	router.get('/locations', isAuthenticated, function(req, res){
+		log('@GET locations');
+		locationController.getLocations(req, res);
+	});
+
+
 
 
 	//Error handling

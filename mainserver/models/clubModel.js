@@ -13,7 +13,8 @@ var clubSchema = mongoose.Schema({
 	maxMembers: 	{ type: Number},
 	authKey: 		{ type: String, required: true},
 	members: 		{ type: [{type: ObjectId, ref: "users"}]},
-	rating: 		{ type: Number}
+	rating: 		{ type: Number},
+	locations: 		{ type: [{type: String, ref:"locations"}]}
 });
 
 // toJson
@@ -24,6 +25,10 @@ clubSchema.methods.toJson = function(){
 	for(i in clubObject.members)
 		members.push(clubObject.members[i].username);
 
+	var locations = []
+	for(i in clubObject.locations)
+		locations.push(clubObject.locations[i].name);
+
 	// don't print authkey, only admin can see it from mongodb panel.
 	var response = {
 		clubname: clubObject.clubname ? clubObject.clubname : null,
@@ -31,8 +36,10 @@ clubSchema.methods.toJson = function(){
 		isGuild: clubObject.isGuild ? clubObject.isGuild : false,
 		rating: clubObject.rating ? clubObject.rating : null,
 		members: members,
+		locations: locations,
 		color: clubObject.color ? clubObject.color : null,
 		maxMembers: clubObject.maxMembers ? clubObject.maxMembers : null
+		
 	};
 
 	return response;

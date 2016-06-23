@@ -5,6 +5,7 @@ var config = require(ROOT + '/config.json');
 
 var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
+var locations = require(ROOT + '/models/locationModel.js')
 
 var httpResponsesModule = require(ROOT + '/httpResponses/httpResponses.js');
 var httpResponses = httpResponsesModule('club');
@@ -88,6 +89,14 @@ module.exports = function(){
 					}
 				}else {
 					httpResponses.sendFail(res, "club not found");
+				}
+			})
+		},
+
+		addLocation: function(location){
+			clubs.findOne({clubname: location.owner}, function(err, club){
+				if(club){
+					club.locations.push(location.name);
 				}
 			})
 		}
