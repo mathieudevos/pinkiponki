@@ -10,6 +10,8 @@ var router = express.Router();
 var userController = new(require(ROOT + '/controllers/userController.js'));
 var clubController = new(require(ROOT + '/controllers/clubController.js'));
 var gameController = new(require(ROOT + '/controllers/gameController.js'));
+var locationController = new(require(ROOT + '/controllers/locationController.js'));
+
 var httpResponses = new(require(ROOT + '/httpResponses/httpResponses.js'));
 
 var bodyParser = require('body-parser');
