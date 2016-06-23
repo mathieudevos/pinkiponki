@@ -155,7 +155,8 @@ module.exports = function(){
 				verification: [req.body.author],
 				verified: false,
 				author: req.body.author,
-				timestamp: req.body.timestamp ? req.body.timestamp : new Date()
+				timestamp: req.body.timestamp ? req.body.timestamp : new Date(),
+				location: req.body.location
 			});
 
 			log(newgame.toString());
