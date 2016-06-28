@@ -17,6 +17,18 @@ function writeStringResponse(res, status, responseString) {
 	return;
 };
 
+function writeImageResponse(res, status, image){
+	var md5 = HELPERS.md5(image);
+
+	res.writeHead(status,
+	{
+		"Content-Type": "image/jpg",
+		"Content-MD5": md5
+	});
+	res.end(image, 'binary');
+	return;
+}
+
 function getFormattedJSON(myObject){
 			return JSON.stringify(myObject, null, 4) + '\n';
 };
@@ -95,6 +107,12 @@ module.exports = function (objectType) {
 				message: msg
 			});
 			writeStringResponse(res, 200, content);
+			return;
+		},
+
+		sendImage: function(res, img){
+			log("Sending image");
+			writeImageResponse(res, 200, img);
 			return;
 		}
 	}

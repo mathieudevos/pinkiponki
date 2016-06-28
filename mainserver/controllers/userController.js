@@ -2,6 +2,7 @@ ROOT = process.cwd();
 HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
+var fs = require('fs');
 
 var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
@@ -175,6 +176,40 @@ module.exports = function () {
 					httpResponses.respondPureString(res, response);
 					return;
 				 });
+		},
+
+		uploadProfile: function(req, res){
+			fs.readFile(req.files.image.path, function(err, data){
+				var dir = ROOT + '/uploads';
+				var fullpath = dir + '/profile/' + req.files.image.originalFilename;
+				fs.writeFile(fullpath, data, function(err){
+					if (err){
+						httpResponses.sendError(res, err);
+						return;
+					}else {
+						updateProfilePicture(req.user.username, req.files.image.originalFilename);
+						httpResponses.sendImageOK(res, "upload complete");
+					}
+
+				});
+			});
+		},
+
+		updateProfilePicture: function(username, pictureLink){
+			users.findOne({username: username}, function(err, user){
+				if(user){
+					user.profilePicture = pictureLink;
+					user.save();
+				}
+			});
+		},
+
+		getProfilePicture: function(pictureName, res){
+			var imgLink = ROOT + '/uploads/profile/' + pictureName;
+			var img = fs.readFileSync(imgLink);
+			if(img){
+				httpResponses.sendImage(res, img);
+			}
 		}
 	}
 };

@@ -20,7 +20,8 @@ var userSchema = mongoose.Schema({
 	friends: 		{ type: [{Type: String}]},
 	friendsTimeline: { type: [{type: ObjectId, ref: "games"}]},
 	created: 		{ type: Date},
-	lastSeen:  		{ type: Date}
+	lastSeen:  		{ type: Date},
+	profilePicture:        { type: String}
 });
 
 //Methods
@@ -58,7 +59,8 @@ userSchema.methods.toJson = function(){
 		friends: friends,
 		friendsTimeline: friendsTimeline,
 		created: userObject.created ? userObject.created : null,
-		lastSeen: userObject.lastSeen ? userObject.lastSeen : null
+		lastSeen: userObject.lastSeen ? userObject.lastSeen : null,
+		profilePicture: userObject.profilePicture ? userObject.profilePicture : null
 	};
 
 	return response;
