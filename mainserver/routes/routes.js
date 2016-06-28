@@ -152,7 +152,7 @@ module.exports = function(passport) {
 	//Image interactions
 	router.post('/upload/profile', isAuthenticated, function(req, res){
 		log('@POST upload/profile');
-		userController.uploadProfile(req, res);
+		userController.uploadProfilePicture(req, res);
 	});
 
 

@@ -178,7 +178,7 @@ module.exports = function () {
 				 });
 		},
 
-		uploadProfile: function(req, res){
+		uploadProfilePicture: function(req, res){
 			fs.readFile(req.files.image.path, function(err, data){
 				var dir = ROOT + '/uploads';
 				var fullpath = dir + '/profile/' + req.files.image.originalFilename;
