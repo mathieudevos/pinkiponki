@@ -71,6 +71,11 @@ module.exports = function(passport) {
 	});
 
 	//User interactions
+	router.post('/users/', isAuthenticated, function(req, res){
+		log('@POST /users');
+		userController.postUser(req, res);
+	});
+
 	router.get('/users', isAuthenticated, function (req, res) {
 		log('@GET /users');
 		userController.getUsers(req, res);

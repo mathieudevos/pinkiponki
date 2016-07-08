@@ -210,6 +210,26 @@ module.exports = function () {
 			if(img){
 				httpResponses.sendImage(res, img);
 			}
+		},
+
+		postUser: function(req, res){
+			users.findOne({username: req.user.username}, function(err, user){
+				if(err){
+					httpResponses.sendError(res, err);
+					return;
+				}
+				if(user){
+					user.firstname 	= req.body.firstname;
+					user.lastname 	= req.body.lastname;
+					user.about 		= req.body.about;
+					user.save();
+					httpResponses.sendUsername(res, user.username);
+					return;
+				}else{
+					httpResponses.sendFail(res, "could not find user");
+					return;
+				}
+			});
 		}
 	}
 };

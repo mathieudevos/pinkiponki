@@ -114,6 +114,15 @@ module.exports = function (objectType) {
 			log("Sending image");
 			writeImageResponse(res, 200, img);
 			return;
+		},
+
+		sendUsername: function(res, uname){
+			log("Sending username");
+			var content = getFormattedJSON({
+				username: uname.toString(),
+			});
+			writeStringResponse(res, 200, content);
+			return;
 		}
 	}
 };
