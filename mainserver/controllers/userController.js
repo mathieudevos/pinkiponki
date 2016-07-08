@@ -213,12 +213,24 @@ module.exports = function () {
 		},
 
 		postUser: function(req, res){
-			users.update(
+			users.findOneAndUpdate(
 				{ username: req.user.username},
 				{ 
 					firstName: req.body.firstName,
 					lastName: req.body.lastName,
 					about: req.body.about
+				}, function(err, user){
+					if(err){
+						httpResponses.sendError(res, err);
+						return;
+					}
+					if(user){
+						httpResponses.sendUsername(res, user.username);
+						return;
+					}else{
+						httpResponses.sendFail(res, "updating user fail");
+						return;
+					}
 				});
 			
 		}
