@@ -17,6 +17,7 @@
     "kerberos": "~0.0.20",
     "mongodb": "~2.1.20",
     "mathjs": "*",
+    "formidable":"*",
 
     "mongoose": "3.6.18",
     "mongoose-schema-extend": "*",

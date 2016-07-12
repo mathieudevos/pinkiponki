@@ -3,6 +3,7 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
+var formidable = require('formidable');
 
 var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
@@ -17,6 +18,34 @@ var hasAsFriend = function(friendlist, friendname){
 		}
 	}
 	return false;
+}
+
+function handlePicturePost(req, res) {
+	if(!req.files){
+		log('Invalid parameters (0)');
+		httpResponses.sendError(res, "invalid parameters (0)");
+		return;
+	}
+
+	if(req.files && !req.files.image){
+		log('Invalid parameters (1)');
+		httpResponses.sendError(res, "invalid parameters (1)");
+		return;
+	}
+	fs.readFile(req.files.image.path, function(err, data){
+		var dir = ROOT + '/uploads';
+		var fullpath = dir + '/profile/' + req.files.image.originalFilename;
+		fs.writeFile(fullpath, data, function(err){
+			if (err){
+				httpResponses.sendError(res, err);
+				return;
+			}else {
+				updateProfilePicture(req.user.username, req.files.image.originalFilename);
+				httpResponses.sendOK(res, "upload complete");
+			}
+
+		});
+	});
 }
 
 module.exports = function () {
@@ -179,19 +208,15 @@ module.exports = function () {
 		},
 
 		uploadProfilePicture: function(req, res){
-			fs.readFile(req.files.image.path, function(err, data){
-				var dir = ROOT + '/uploads';
-				var fullpath = dir + '/profile/' + req.files.image.originalFilename;
-				fs.writeFile(fullpath, data, function(err){
-					if (err){
-						httpResponses.sendError(res, err);
-						return;
-					}else {
-						updateProfilePicture(req.user.username, req.files.image.originalFilename);
-						httpResponses.sendImageOK(res, "upload complete");
-					}
+			var form = new formidable.IncomingForm();
+			form.parse(req, function(err, fields, files){
+				req.files = {};
+				req.files = files;
 
-				});
+				log(files);
+
+				handlePicturePost(req, res);
+				return;
 			});
 		},
 
