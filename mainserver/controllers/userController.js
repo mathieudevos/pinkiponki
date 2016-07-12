@@ -4,6 +4,7 @@ log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
 var formidable = require('formidable');
+var util = require('util');
 
 var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
@@ -212,10 +213,8 @@ module.exports = function () {
 			form.parse(req, function(err, fields, files){
 				req.files = {};
 				req.files = files;
-				log(fields);
-				log(files);
-				for(i in files)
-					log(files[i].name);
+
+				log(util.inspect({fields: fields, files: files}));
 
 				handlePicturePost(req, res);
 				return;

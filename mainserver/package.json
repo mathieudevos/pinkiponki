@@ -18,6 +18,7 @@
     "mongodb": "~2.1.20",
     "mathjs": "*",
     "formidable":"*",
+    "util":"*",
 
     "mongoose": "3.6.18",
     "mongoose-schema-extend": "*",
