@@ -213,7 +213,10 @@ module.exports = function () {
 				req.files = {};
 				req.files = files;
 
+				log(fields);
 				log(files);
+				for(i in files)
+					log(files[i].name);
 
 				handlePicturePost(req, res);
 				return;
