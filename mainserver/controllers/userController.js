@@ -212,7 +212,6 @@ module.exports = function () {
 			form.parse(req, function(err, fields, files){
 				req.files = {};
 				req.files = files;
-				log(req);
 				log(fields);
 				log(files);
 				for(i in files)
