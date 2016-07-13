@@ -4,9 +4,6 @@ log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
 var path = require('path');
-var gm = require('gm').subClass({
-	imageMagick: true
-});
 var formidable = require('formidable');
 var util = require('util');
 
@@ -25,54 +22,15 @@ var hasAsFriend = function(friendlist, friendname){
 	return false;
 }
 
-function handlePicturePost(req, res) {
-	if(!req.files){
-		log('Invalid parameters (0)');
-		httpResponses.sendError(res, "invalid parameters (0)");
-		return;
-	}
-
-	if(req.files && !req.files.image){
-		log('Invalid parameters (1)');
-		httpResponses.sendError(res, "invalid parameters (1)");
-		return;
-	}
-	var dir = ROOT + '/uploads';
-	var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
-	var respath = path.resolve(fullpath);
-	
-
-	fs.rename(req.files.image.path, respath, function(err){
-		if(err){
-	 			httpResponses.sendError(res, err);
-	 			return;
-	 		} else {
-	 			updateProfilePicture(req.user.username, req.files.image.originalFilename);
-	 			httpResponses.sendOK(res, "upload complete");
-	 		}
+linkProfilePicture = function(username, pictureLink){
+	log("Adding link: " + username + " -> " + pictureLink);
+	users.findOne({username: username}, function(err, user){
+		if(user){
+			user.profilePicture = pictureLink;
+			user.save();
+		}
 	});
-
-	// gm(req.files.image.path)
-	// 	.write(fullpath, function(err){
-	// 		if(err){
-	// 			httpResponses.sendError(res, err);
-	// 			return;
-	// 		} else {
-	// 			updateProfilePicture(req.user.username, req.files.image.originalFilename);
-	// 			httpResponses.sendOK(res, "upload complete");
-	// 		}
-	// 	});
-
-		// fs.writeFile(fullpath, data, function(err){
-		// 	if (err){
-		// 		httpResponses.sendError(res, err);
-		// 		return;
-		// 	}else {
-		// 		updateProfilePicture(req.user.username, req.files.image.originalFilename);
-		// 		httpResponses.sendOK(res, "upload complete");
-		// 	}
-
-		// });
+	return;
 }
 
 module.exports = function () {
@@ -256,23 +214,12 @@ module.exports = function () {
 			 			httpResponses.sendError(res, err);
 			 			return;
 			 		} else {
-			 			updateProfilePicture(req.user.username, files.image.originalFilename);
+			 			linkProfilePicture(req.user.username, files.image.originalFilename);
 			 			httpResponses.sendOK(res, "upload complete");
 			 		}
 				});
 				return;
 			});
-		},
-
-		updateProfilePicture: function(username, pictureLink){
-			log("Adding link: " + username + " -> " + pictureLink);
-			users.findOne({username: username}, function(err, user){
-				if(user){
-					user.profilePicture = pictureLink;
-					user.save();
-				}
-			});
-			return;
 		},
 
 		getProfilePicture: function(pictureName, res){
