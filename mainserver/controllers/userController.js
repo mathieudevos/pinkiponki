@@ -35,7 +35,7 @@ function handlePicturePost(req, res) {
 	}
 	fs.readFile(req.files.image.path, function(err, data){
 		var dir = ROOT + '/uploads';
-		var fullpath = dir + '/profile/' + req.files.image.originalFilename;
+		var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
 		fs.writeFile(fullpath, data, function(err){
 			if (err){
 				httpResponses.sendError(res, err);
@@ -211,7 +211,6 @@ module.exports = function () {
 		uploadProfilePicture: function(req, res){
 			var form = new formidable.IncomingForm();
 			form.parse(req, function(err, fields, files){
-				req.files = {};
 				req.files = files;
 
 				log(util.inspect({fields: fields, files: files}));
