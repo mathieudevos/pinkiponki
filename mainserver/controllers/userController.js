@@ -245,7 +245,12 @@ module.exports = function () {
 				var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
 				var respath = path.resolve(fullpath);
 
-				fs.rename(files.image.path, respath, function(err){
+				log(respath);
+
+				fs.writeFileSync(respath, "", function(err){});
+
+
+				fs.renameSync(files.image.path, respath, function(err){
 					if(err){
 			 			httpResponses.sendError(res, err);
 			 			return;
