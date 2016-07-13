@@ -19,6 +19,7 @@
     "mathjs": "*",
     "formidable":"*",
     "util":"*",
+    "gm":"*",
 
     "mongoose": "3.6.18",
     "mongoose-schema-extend": "*",

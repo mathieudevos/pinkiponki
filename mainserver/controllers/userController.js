@@ -3,6 +3,7 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
+var gm = require('gm');
 var formidable = require('formidable');
 var util = require('util');
 
@@ -36,16 +37,28 @@ function handlePicturePost(req, res) {
 	fs.readFile(req.files.image.path, function(err, data){
 		var dir = ROOT + '/uploads';
 		var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
-		fs.writeFile(fullpath, data, function(err){
-			if (err){
-				httpResponses.sendError(res, err);
-				return;
-			}else {
-				updateProfilePicture(req.user.username, req.files.image.originalFilename);
-				httpResponses.sendOK(res, "upload complete");
-			}
+		gm(req.files.image.path)
+			.autoOrient()
+			.write(fullpath, function(err){
+				if(err){
+					httpResponses.sendError(res, err);
+					return;
+				} else {
+					updateProfilePicture(req.user.username, req.files.image.originalFilename);
+					httpResponses.sendOK(res, "upload complete");
+				}
+			});
 
-		});
+		// fs.writeFile(fullpath, data, function(err){
+		// 	if (err){
+		// 		httpResponses.sendError(res, err);
+		// 		return;
+		// 	}else {
+		// 		updateProfilePicture(req.user.username, req.files.image.originalFilename);
+		// 		httpResponses.sendOK(res, "upload complete");
+		// 	}
+
+		// });
 	});
 }
 
