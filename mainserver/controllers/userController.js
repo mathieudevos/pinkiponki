@@ -251,8 +251,6 @@ module.exports = function () {
 					fs.mkdirSync(dir);
 				}
 
-				fs.writeFileSync(respath, "");
-
 				fs.rename(files.image.path, respath, function(err){
 					if(err){
 			 			httpResponses.sendError(res, err);
@@ -267,12 +265,14 @@ module.exports = function () {
 		},
 
 		updateProfilePicture: function(username, pictureLink){
+			log("Adding link: " + username + " -> " + pictureLink);
 			users.findOne({username: username}, function(err, user){
 				if(user){
 					user.profilePicture = pictureLink;
 					user.save();
 				}
 			});
+			return;
 		},
 
 		getProfilePicture: function(pictureName, res){
@@ -281,6 +281,7 @@ module.exports = function () {
 			if(img){
 				httpResponses.sendImage(res, img);
 			}
+			return;
 		},
 
 		postUser: function(req, res){
