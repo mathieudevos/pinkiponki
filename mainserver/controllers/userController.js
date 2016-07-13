@@ -36,20 +36,19 @@ function handlePicturePost(req, res) {
 		httpResponses.sendError(res, "invalid parameters (1)");
 		return;
 	}
-	fs.readFile(req.files.image.path, function(err, data){
-		var dir = ROOT + '/uploads';
-		var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
-		gm(req.files.image.path)
-			.autoOrient()
-			.write(fullpath, function(err){
-				if(err){
-					httpResponses.sendError(res, err);
-					return;
-				} else {
-					updateProfilePicture(req.user.username, req.files.image.originalFilename);
-					httpResponses.sendOK(res, "upload complete");
-				}
-			});
+	var dir = ROOT + '/uploads';
+	var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
+	gm(req.files.image.path)
+		.autoOrient()
+		.write(fullpath, function(err){
+			if(err){
+				httpResponses.sendError(res, err);
+				return;
+			} else {
+				updateProfilePicture(req.user.username, req.files.image.originalFilename);
+				httpResponses.sendOK(res, "upload complete");
+			}
+		});
 
 		// fs.writeFile(fullpath, data, function(err){
 		// 	if (err){
@@ -61,7 +60,6 @@ function handlePicturePost(req, res) {
 		// 	}
 
 		// });
-	});
 }
 
 module.exports = function () {
