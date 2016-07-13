@@ -161,6 +161,12 @@ module.exports = function(passport) {
 	});
 
 
+	router.get('/upload/profile/:username', function(req, res){
+		log('@GET upload/profile/' + req.params.username + '   - profile picture');
+		userController.getProfilePicture(req, res)
+	})
+
+
 
 
 	//Error handling

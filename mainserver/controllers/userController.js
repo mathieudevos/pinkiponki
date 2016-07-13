@@ -222,13 +222,24 @@ module.exports = function () {
 			});
 		},
 
-		getProfilePicture: function(pictureName, res){
-			var imgLink = ROOT + '/uploads/profile/' + pictureName;
-			var img = fs.readFileSync(imgLink);
-			if(img){
-				httpResponses.sendImage(res, img);
-			}
-			return;
+		getProfilePicture: function(req, res){
+			users.findOne({username: req.params.username}, function(user){
+				if(user){
+					if(user.profilePicture){
+						var imgLink = ROOT + '/uploads/profile/' + user.username + '/' + user.profilePicture;
+						var img = fs.readFileSync(imgLink);
+						if(img)
+							httpResponses.sendImage(res, img);
+						return;
+					}else{
+						httpResponses.sendFail(res, "no profile picture");
+						return;
+					}
+				} else {
+					httpResponses.sendError(res, "could not find user");
+					return;
+				}
+			});
 		},
 
 		postUser: function(req, res){
