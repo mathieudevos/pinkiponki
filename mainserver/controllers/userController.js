@@ -38,16 +38,26 @@ function handlePicturePost(req, res) {
 	}
 	var dir = ROOT + '/uploads';
 	var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
-	gm(req.files.image.path)
-		.write(fullpath, function(err){
-			if(err){
-				httpResponses.sendError(res, err);
-				return;
-			} else {
-				updateProfilePicture(req.user.username, req.files.image.originalFilename);
-				httpResponses.sendOK(res, "upload complete");
-			}
-		});
+	// gm(req.files.image.path)
+	// 	.write(fullpath, function(err){
+	// 		if(err){
+	// 			httpResponses.sendError(res, err);
+	// 			return;
+	// 		} else {
+	// 			updateProfilePicture(req.user.username, req.files.image.originalFilename);
+	// 			httpResponses.sendOK(res, "upload complete");
+	// 		}
+	// 	});
+
+	fs.rename(req.files.image.path, fullpath, function(err){
+		if(err){
+	 			httpResponses.sendError(res, err);
+	 			return;
+	 		} else {
+	 			updateProfilePicture(req.user.username, req.files.image.originalFilename);
+	 			httpResponses.sendOK(res, "upload complete");
+	 		}
+	});
 
 		// fs.writeFile(fullpath, data, function(err){
 		// 	if (err){
