@@ -20,6 +20,7 @@
     "formidable":"*",
     "util":"*",
     "gm":"*",
+    "path":"*",
 
     "mongoose": "3.6.18",
     "mongoose-schema-extend": "*",

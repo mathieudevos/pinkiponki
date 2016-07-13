@@ -3,6 +3,7 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
+var path = require('path');
 var gm = require('gm').subClass({
 	imageMagick: true
 });
@@ -38,6 +39,7 @@ function handlePicturePost(req, res) {
 	}
 	var dir = ROOT + '/uploads';
 	var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
+	var respath = path.resolve(fullpath);
 	// gm(req.files.image.path)
 	// 	.write(fullpath, function(err){
 	// 		if(err){
@@ -49,7 +51,7 @@ function handlePicturePost(req, res) {
 	// 		}
 	// 	});
 
-	fs.rename(req.files.image.path, fullpath, function(err){
+	fs.rename(req.files.image.path, respath, function(err){
 		if(err){
 	 			httpResponses.sendError(res, err);
 	 			return;
