@@ -3,7 +3,9 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
-var gm = require('gm');
+var gm = require('gm').subClass({
+	imageMagick: true
+});
 var formidable = require('formidable');
 var util = require('util');
 
