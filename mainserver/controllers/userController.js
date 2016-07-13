@@ -247,10 +247,9 @@ module.exports = function () {
 
 				log(respath);
 
-				fs.writeFileSync(respath, "", function(err){});
+				fs.writeFileSync(respath, "");
 
-
-				fs.renameSync(files.image.path, respath, function(err){
+				fs.rename(files.image.path, respath, function(err){
 					if(err){
 			 			httpResponses.sendError(res, err);
 			 			return;
