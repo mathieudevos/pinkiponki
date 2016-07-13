@@ -223,7 +223,7 @@ module.exports = function () {
 		},
 
 		getProfilePicture: function(req, res){
-			users.findOne({username: req.params.username}, function(user){
+			users.findOne({username: req.params.username}, function(err, user){
 				if(user){
 					if(user.profilePicture){
 						var imgLink = ROOT + '/uploads/profile/' + user.username + '/' + user.profilePicture;

@@ -155,14 +155,14 @@ module.exports = function(passport) {
 
 
 	//Image interactions
-	router.post('/upload/profile', isAuthenticated, function(req, res){
-		log('@POST upload/profile');
+	router.post('/uploads/profile', isAuthenticated, function(req, res){
+		log('@POST uploads/profile');
 		userController.uploadProfilePicture(req, res);
 	});
 
 
-	router.get('/upload/profile/:username', function(req, res){
-		log('@GET upload/profile/' + req.params.username + '   - profile picture');
+	router.get('/uploads/profile/:username', function(req, res){
+		log('@GET uploads/profile/' + req.params.username + '   - profile picture');
 		userController.getProfilePicture(req, res)
 	})
 
