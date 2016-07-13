@@ -39,7 +39,6 @@ function handlePicturePost(req, res) {
 	var dir = ROOT + '/uploads';
 	var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
 	gm(req.files.image.path)
-		.autoOrient()
 		.write(fullpath, function(err){
 			if(err){
 				httpResponses.sendError(res, err);
