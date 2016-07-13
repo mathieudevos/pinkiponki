@@ -40,16 +40,7 @@ function handlePicturePost(req, res) {
 	var dir = ROOT + '/uploads';
 	var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
 	var respath = path.resolve(fullpath);
-	// gm(req.files.image.path)
-	// 	.write(fullpath, function(err){
-	// 		if(err){
-	// 			httpResponses.sendError(res, err);
-	// 			return;
-	// 		} else {
-	// 			updateProfilePicture(req.user.username, req.files.image.originalFilename);
-	// 			httpResponses.sendOK(res, "upload complete");
-	// 		}
-	// 	});
+	
 
 	fs.rename(req.files.image.path, respath, function(err){
 		if(err){
@@ -60,6 +51,17 @@ function handlePicturePost(req, res) {
 	 			httpResponses.sendOK(res, "upload complete");
 	 		}
 	});
+
+	// gm(req.files.image.path)
+	// 	.write(fullpath, function(err){
+	// 		if(err){
+	// 			httpResponses.sendError(res, err);
+	// 			return;
+	// 		} else {
+	// 			updateProfilePicture(req.user.username, req.files.image.originalFilename);
+	// 			httpResponses.sendOK(res, "upload complete");
+	// 		}
+	// 	});
 
 		// fs.writeFile(fullpath, data, function(err){
 		// 	if (err){
@@ -239,7 +241,19 @@ module.exports = function () {
 
 				log(util.inspect({fields: fields, files: files}));
 
-				handlePicturePost(req, res);
+				var dir = ROOT + '/uploads';
+				var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
+				var respath = path.resolve(fullpath);
+
+				fs.rename(files.image.path, respath, function(err){
+					if(err){
+			 			httpResponses.sendError(res, err);
+			 			return;
+			 		} else {
+			 			updateProfilePicture(req.user.username, files.image.originalFilename);
+			 			httpResponses.sendOK(res, "upload complete");
+			 		}
+				});
 				return;
 			});
 		},
