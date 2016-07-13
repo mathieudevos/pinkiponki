@@ -20,6 +20,7 @@ var config = require(ROOT + '/config.json');
 log("HOSTNAME: " + config.server.host);
 log("    PORT: " + config.server.port);
 log("SSL PORT: " + config.server.sslport);
+log(__dirname);
 
 // Connect to mongoose
 mongoose.connect('mongodb://localhost/' + config.database);

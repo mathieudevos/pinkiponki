@@ -241,7 +241,7 @@ module.exports = function () {
 
 				log(util.inspect({fields: fields, files: files}));
 
-				var dir = ROOT + '/uploads';
+				var dir = __dirname + '/uploads';
 				var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
 				var respath = path.resolve(fullpath);
 
