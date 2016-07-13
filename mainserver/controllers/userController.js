@@ -241,11 +241,15 @@ module.exports = function () {
 
 				log(util.inspect({fields: fields, files: files}));
 
-				var dir = __dirname + '/uploads';
-				var fullpath = dir + '/profile/' + req.user.username + '/' + req.files.image.name;
+				var dir = ROOT + '/uploads/profile/' + req.user.username + '/';
+				var fullpath = dir  + req.files.image.name;
 				var respath = path.resolve(fullpath);
 
 				log(respath);
+
+				if(!fs.existsSync(dir)){
+					fs.mkdirSync(dir);
+				}
 
 				fs.writeFileSync(respath, "");
 
