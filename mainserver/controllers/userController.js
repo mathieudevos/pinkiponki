@@ -214,7 +214,7 @@ module.exports = function () {
 			 			httpResponses.sendError(res, err);
 			 			return;
 			 		} else {
-			 			linkProfilePicture(req.user.username, files.image.originalFilename);
+			 			linkProfilePicture(req.user.username, files.image.name);
 			 			httpResponses.sendOK(res, "upload complete");
 			 		}
 				});
