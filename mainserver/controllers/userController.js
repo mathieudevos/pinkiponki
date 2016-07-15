@@ -271,11 +271,12 @@ module.exports = function () {
 								.write(iconLink, function (err){
 									if(err)
 										httpResponses.sendError(res, "writing file went wrong");
+									log('File writing done!');
+									var img = fs.readFileSync(iconLink);
+									if(img)
+										httpResponses.sendImage(res, img);
+									return;
 								});
-							var img = fs.readFileSync(iconLink);
-							if(img)
-								httpResponses.sendImage(res, img);
-							return;
 						}
 					} else {
 						httpResponses.sendError(res, "could not find profilePicture");
