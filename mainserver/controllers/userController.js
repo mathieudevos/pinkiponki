@@ -269,8 +269,10 @@ module.exports = function () {
 								.crop(x_total, height, x_start, 0)
 								.resize(40,40)
 								.write(iconLink, function (err){
-									if(err)
-										httpResponses.sendError(res, "writing file went wrong");
+									if(err){
+										httpResponses.sendError(res, err);
+										return;
+									}
 									log('File writing done!');
 									var img = fs.readFileSync(iconLink);
 									if(img)
