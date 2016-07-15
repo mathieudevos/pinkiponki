@@ -6,6 +6,7 @@ var fs = require('fs');
 var gm = require('gm').subClass({
 	imageMagick: true
 });
+var sizeOf = require('image-size');
 var path = require('path');
 var formidable = require('formidable');
 var util = require('util');
@@ -259,13 +260,8 @@ module.exports = function () {
 						}else{
 							var imgLink = ROOT + '/uploads/profile/' + user.username + '/' + user.profilePicture;
 							log(imgLink);
-							var width;
-							var height;
-							gm(imgLink).size(function(err, size){
-								log('Size: ' + size.width + 'x' + size.height);
-								width = size.width;
-								height = height.width;
-							});
+							var width = sizeOf(imgLink).width;
+							var height = sizeOf(imgLink).height;
 							var x_start = (width * 15 / 70).toFixed();
 							var x_total  = (width * 40 / 70).toFixed();
 							
