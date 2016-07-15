@@ -21,6 +21,7 @@
     "util":"*",
     "gm":"*",
     "path":"*",
+    "file-exists":"*",
 
     "mongoose": "3.6.18",
     "mongoose-schema-extend": "*",

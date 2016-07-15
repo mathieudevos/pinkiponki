@@ -9,6 +9,7 @@ var gm = require('gm').subClass({
 var path = require('path');
 var formidable = require('formidable');
 var util = require('util');
+var fileExists = require('file-exists');
 
 var users = require(ROOT + '/models/userModel.js');
 var clubs = require(ROOT + '/models/clubModel.js');
@@ -251,14 +252,17 @@ module.exports = function () {
 				if(user){
 					if(user.profilePicture){
 						var iconLink = ROOT + '/uploads/profile/' + user.username + '/icon.jpg'
-						if(fs.existsSync(iconLink)){
+						if(fileExists(iconLink)){
 							img = fs.readFileSync(iconLink)
 							httpResponses.sendImage(res, img);
 							return;
 						}else{
 							var imgLink = ROOT + '/uploads/profile/' + user.username + '/' + user.profilePicture;
-							var width, height;
+							log(imgLink);
+							var width;
+							var height;
 							gm(imgLink).size(function(err, size){
+								log('Size: ' + size.width + 'x' + size.height);
 								width = size.width;
 								height = height.width;
 							});
@@ -269,8 +273,8 @@ module.exports = function () {
 								.crop(x_total, height, x_start, 0)
 								.resize(40,40)
 								.write(iconLink, function (err){
-									httpResponses.sendFail(res, "no profile picture");
-									return;
+									if(err)
+										httpResponses.sendError(res, "writing file went wrong");
 								});
 							var img = fs.readFileSync(iconLink);
 							if(img)
