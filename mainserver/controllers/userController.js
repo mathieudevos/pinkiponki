@@ -3,6 +3,9 @@ HELPERS = require(ROOT + '/helpers/general.js');
 log = HELPERS.log;
 var config = require(ROOT + '/config.json');
 var fs = require('fs');
+var gm = require('gm').subClass({
+	imageMagick: true
+});
 var path = require('path');
 var formidable = require('formidable');
 var util = require('util');
@@ -227,10 +230,11 @@ module.exports = function () {
 				if(user){
 					if(user.profilePicture){
 						var imgLink = ROOT + '/uploads/profile/' + user.username + '/' + user.profilePicture;
-						var img = fs.readFileSync(imgLink);
-						if(img)
+						if(fs.existsSync(imgLink)){
+							var img = fs.readFileSync(imgLink);
 							httpResponses.sendImage(res, img);
-						return;
+							return;
+						}
 					}else{
 						httpResponses.sendFail(res, "no profile picture");
 						return;
