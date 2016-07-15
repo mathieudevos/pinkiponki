@@ -247,8 +247,8 @@ module.exports = function () {
 				if(user){
 					if(user.profilePicture){
 						var iconLink = ROOT + '/uploads/profile/' + user.username + '/icon.jpg'
-						var img = fs.readFileSync(iconLink)
-						if(img){
+						if(fs.existsSync(iconLink)){
+							img = fs.readFileSync(iconLink)
 							httpResponses.sendImage(res, img);
 							return;
 						}else{
