@@ -242,6 +242,48 @@ module.exports = function () {
 			});
 		},
 
+		getProfileIcon: function(req, res){
+			users.findOne({username: req.params.username}, function(err, user){
+				if(user){
+					if(user.profilePicture){
+						var iconLink = ROOT + '/uploads/profile/' + user.username + '/icon.jpg'
+						var img = fs.readFileSync(iconLink)
+						if(img){
+							httpResponses.sendImage(res, img);
+							return;
+						}else{
+							var imgLink = ROOT + '/uploads/profile/' + user.username + '/' + user.profilePicture;
+							var width, height;
+							gm(imgLink).size(function(err, size){
+								width = size.width;
+								height = height.width;
+							});
+							var x_start = (width * 15 / 70).toFixed();
+							var x_total  = (width * 40 / 70).toFixed();
+							
+							gm(imgLink)
+								.crop(x_total, height, x_start, 0)
+								.resize(40,40)
+								.write(iconLink, function (err){
+									httpResponses.sendFail(res, "no profile picture");
+									return;
+								});
+							var img = fs.readFileSync(iconLink);
+							if(img)
+								httpResponses.sendImage(res, img);
+							return;
+						}
+					} else {
+						httpResponses.sendError(res, "could not find profilePicture");
+						return;
+					}
+				} else {
+					httpResponses.sendError(res, "could not find user");
+					return;
+				}
+			});
+		},
+
 		postUser: function(req, res){
 			users.findOneAndUpdate(
 				{ username: req.user.username},

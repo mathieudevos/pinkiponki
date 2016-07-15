@@ -163,8 +163,13 @@ module.exports = function(passport) {
 
 	router.get('/uploads/profile/:username', function(req, res){
 		log('@GET uploads/profile/' + req.params.username + '   - profile picture');
-		userController.getProfilePicture(req, res)
-	})
+		userController.getProfilePicture(req, res);
+	});
+
+	router.get('/profileicon/:username', function(req, res){
+		log('@GET /profileicon/' + req.params.username);
+		userController.getProfileIcon(req, res);
+	});
 
 
 
